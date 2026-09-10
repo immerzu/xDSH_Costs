@@ -1,0 +1,18 @@
+# Browser-Automation (Playwright-Profil, Testartefakte)
+.playwright-mcp/
+
+# Node
+node_modules/
+
+# Temporäre Testdateien
+_tmp_*
+
+# Testartefakte (Live-Proben, Screenshots)
+out/
+
+# Versionskopien (nie committen) — Ablageort für Skriptversionen: !Ausgabe/
+Ausgabe/
+\!Ausgabe/
+
+# Hinweis: Archiv/ (Vorgängerversionen zur Nachvollziehbarkeit) wird bewusst
+# versioniert und ist deshalb hier NICHT ausgenommen.
