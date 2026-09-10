@@ -12,12 +12,20 @@ als schwebendes Badge im DSH-Web-GUI.
 |---|---|
 | [`memory/HANDOVER_20260910.md`](memory/HANDOVER_20260910.md) | Auftrag, Entscheidungen, Bau, Verifikation, Umgebungs-Lehren, Blocker, offene Punkte |
 | [`memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md`](memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md) | Endpunkte, **Auth-Beweis (Token ja / Cookies nein)**, Token-Herkunft, Antwortformen, DOM-Falle, WAF, Codeanker |
-| [`memory/TESTEN-userscript-billing-badge.md`](memory/TESTEN-userscript-billing-badge.md) | Testrezept in 6 Stufen mit Befehlen und erwarteten Checks |
+| [`memory/TESTEN-userscript-xdsh-costs.md`](memory/TESTEN-userscript-xdsh-costs.md) | Testrezept in 6 Stufen mit Befehlen und erwarteten Checks |
+
+## Repository
+
+| | |
+|---|---|
+| GitHub | <https://github.com/immerzu/xDSH_Costs> (**public**), Branch `main` |
+| Erstanlage | 2026-09-10, `gh repo create immerzu/xDSH_Costs --public --source . --remote origin --push` |
+| Nicht im Repo | `!Ausgabe/` (Verteilkopien) und `out/` (Testartefakte) — per `.gitignore`; `Archiv/` ist bewusst versioniert |
 
 ## Ablageregel (verbindlich)
 
 Alle Informationen und Daten zu diesem Projekt liegen ausschließlich hier:
-`F:\001_Coding_Projekte\xDeepSeek_Billing_Badge`
+`F:\001_Coding_Projekte\xDSH_Costs` (vormals `xDeepSeek_Billing_Badge`)
 
 - Skriptversionen (Verteilkopien) immer nach `!Ausgabe\xdsh-costs-v<version>.user.js`
   (per `.gitignore` ausgenommen). Vor dem Weitergeben Hash-Gleichheit mit der Quelle prüfen.

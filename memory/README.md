@@ -21,6 +21,9 @@ Dieser Ordner ist das dauerhafte Gedächtnis des Projekts. **Vor** Arbeiten am S
   in `xdsh-costs.user.js` umbenannt (`@name` „xDSH Costs (DSH)"). Version 2.0.0, weil der
   neue `@name` in Tampermonkey ein **neues** Skript bedeutet. GM-Schlüssel `xdsb.*` blieben
   bewusst unverändert. Details: [`HANDOVER_20260910.md`](HANDOVER_20260910.md), Abschnitt 9.
+- **Repository:** <https://github.com/immerzu/xDSH_Costs> (**public**, Branch `main`) — am
+  2026-09-10 angelegt und gepusht; `!Ausgabe/` und `out/` sind gitignored, `Archiv/` ist
+  bewusst versioniert.
 - Badge im DSH-GUI unten rechts: `💳 $17.35 · heute $1.59` (grün), Klick öffnet die Usage-Seite,
   Ziehen verschiebt, Tooltip zeigt Details.
 - **Kein API-Key, keine Modellaufrufe** → keine Token-Kosten. Nur die Lese-Endpunkte der
