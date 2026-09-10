@@ -10,9 +10,25 @@ als schwebendes Badge im DSH-Web-GUI.
 
 | Dokument | Inhalt |
 |---|---|
-| [`memory/HANDOVER_20260910.md`](memory/HANDOVER_20260910.md) | Auftrag, Entscheidungen, Bau, Verifikation, Umgebungs-Lehren, Blocker, offene Punkte |
+| [`memory/HANDOVER_20260910.md`](memory/HANDOVER_20260910.md) | Auftrag, Entscheidungen, Bau, Verifikation, Umgebungs-Lehren, Blocker, offene Punkte (Abschnitte 9–11: Umzug, GitHub, Restfehler) |
+| [`memory/SESSION-20260910-umzug-und-github.md`](memory/SESSION-20260910-umzug-und-github.md) | **Umzug + GitHub im Detail:** Entscheidungen, Änderungen, Belege/Commits, wiederverwendbare Methodik, Tampermonkey-Umstieg |
 | [`memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md`](memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md) | Endpunkte, **Auth-Beweis (Token ja / Cookies nein)**, Token-Herkunft, Antwortformen, DOM-Falle, WAF, Codeanker |
 | [`memory/TESTEN-userscript-xdsh-costs.md`](memory/TESTEN-userscript-xdsh-costs.md) | Testrezept in 6 Stufen mit Befehlen und erwarteten Checks |
+
+## Installation in Tampermonkey (wichtig nach Umbenennungen)
+
+Das Skript hat **zwei Identitäten**, die Tampermonkey unterscheidet: der `@name` bestimmt, ob ein
+Import ein **Update** oder ein **neues Skript** ist.
+
+- Aktueller Stand: `@name` **xDSH Costs (DSH)**, Datei `xdsh-costs.user.js`, v2.0.0.
+- **Jede Änderung des `@name` ist für Tampermonkey ein neues Skript.** Dann gilt: neues Skript
+  importieren **und den alten Eintrag löschen**, sonst laufen beide parallel.
+- Die **GM-Speicher-Schlüssel `xdsb.token` / `xdsb.tokenAt` / `xdsb.snapshot` / `xdsb.pos` sind
+  bewusst stabil** (Stand 2.0.0). Sie **nicht** umbenennen, ohne eine Migration einzubauen —
+  sonst ist der Platform-Token im Skript-Speicher weg und das Badge zeigt vorübergehend
+  „nicht angemeldet", bis `platform.deepseek.com` einmal besucht wurde.
+- Import-Werkzeug und Fallstricke: `TESTEN-userscript-xdsh-costs.md`, Abschnitt
+  „Installation / Update in Tampermonkey".
 
 ## Repository
 

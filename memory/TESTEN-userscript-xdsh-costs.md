@@ -151,6 +151,16 @@ vergleichbar.
 
 ## Installation / Update in Tampermonkey
 
+> **Vorher prüfen: wurde der `@name` geändert?**
+> Tampermonkey identifiziert ein Userscript über den `@name`. Bleibt er gleich, ist der Import ein
+> **Update**. Ändert er sich (wie beim Umzug auf v2.0.0 von „xDeepSeek Billing Badge (DSH)" auf
+> „xDSH Costs (DSH)"), entsteht ein **zweites, neues Skript** — dann muss der **alte Eintrag
+> gelöscht** werden, sonst laufen zwei Badges parallel. Version allein (`@version`) genügt
+> **nicht**, um das zu erkennen.
+>
+> Die GM-Schlüssel `xdsb.*` sind bewusst stabil; sie dürfen nur zusammen mit einer Migration
+> geändert werden (Details: `AGENTS.md`, Abschnitt „Installation in Tampermonkey").
+
 ```powershell
 # Trockenlauf: prüft Erreichbarkeit + Metadaten
 node C:\Users\lolo\.dsh\browser-tools\tm-import.mjs --file "!Ausgabe\xdsh-costs-v<version>.user.js" --dry-run
