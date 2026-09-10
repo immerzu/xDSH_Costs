@@ -4,7 +4,8 @@ Rezept, wie eine Änderung am Userscript verifiziert wird. **Von oben nach unten
 Jede Stufe ist stärker als die vorige; Stufe 1–3 laufen ohne Login, Stufe 4–6 brauchen den
 Platform-Login im Automatisierungsprofil.
 
-Alle Befehle im Projektordner `F:\001_Coding_Projekte\xDeepSeek_Billing_Badge` ausführen.
+Alle Befehle im Projektordner `F:\001_Coding_Projekte\xDSH_Costs` ausführen
+(vormals `xDeepSeek_Billing_Badge`).
 
 ---
 

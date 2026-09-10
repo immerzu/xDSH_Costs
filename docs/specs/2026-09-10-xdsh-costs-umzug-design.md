@@ -40,7 +40,7 @@ F:\001_Coding_Projekte\xDSH_Costs\
   memory\
     README.md  HANDOVER_20260910.md
     ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md
-    TESTEN-userscript-billing-badge.md
+    TESTEN-userscript-xdsh-costs.md
   test\parse.test.mjs
   tools\{verify-badge,verify-dsh-tm,verify-dsh-tm-live,live-check,live-parse,tm-import-diagnose}.mjs
   out\                                      Testartefakte (gitignored)
