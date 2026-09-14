@@ -2,6 +2,26 @@
 
 Alle nennenswerten Änderungen an diesem Userscript.
 
+## 2.0.1 — 2026-09-14
+
+Veröffentlichung auf **Greasy Fork** (Erstveröffentlichung) — **keine funktionalen Änderungen**
+am Badge.
+
+- **Metablock lokalisiert:** neue Zeile `@description:ru`; `@description` (deutsch, Default) und
+  `@description:en` nennen jetzt den Geltungsbereich (DSH-GUI auf `127.0.0.1`/`localhost`) und
+  den Kostenhinweis. `@name` bleibt in allen Sprachen `xDSH Costs (DSH)` — keine `@name:xx`-Zeilen.
+  Jede Beschreibungszeile unter der GF-Hartgrenze von 500 Zeichen (244/258/259).
+- **Neu: `description.md`** („Zusätzliche Informationen", Absätze DE → RU → EN) für die
+  GF-Skriptseite und als Sync-Ziel.
+- **Greasy Fork:** Auto-Sync auf
+  `https://raw.githubusercontent.com/immerzu/xDSH_Costs/main/xdsh-costs.user.js`.
+- **Secret-Prüfung vor der Veröffentlichung** (Auftrag: „keine Secrets hochladen"):
+  keine Tokens, API-Keys, Passwörter oder Cookies im Skript, in den versionierten Dateien oder
+  in der Git-Historie. Der Platform-Token wird ausschließlich zur Laufzeit aus dem
+  Browser-`localStorage` gelesen; `out/` (Live-Proben, Screenshots) ist gitignored und wird
+  nicht veröffentlicht.
+- Verifikation: `node --check` ohne Befund (Exit 0), Parser-Tests **16/16**.
+
 ## 2.0.0 — 2026-09-10
 
 Umzug und Umbenennung — **keine funktionalen Änderungen** am Badge.

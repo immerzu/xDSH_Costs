@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         xDSH Costs (DSH)
 // @namespace    https://github.com/immerzu
-// @version      2.0.0
-// @description  Zeigt Topped-up-Balance und Tageskosten des DeepSeek-API-Kontos als schwebendes Badge im DSH-Web-GUI.
-// @description:en  Shows the topped-up balance and today's cost of the DeepSeek API account as a floating badge in the DSH web GUI.
+// @version      2.0.1
+// @description  Zeigt Topped-up-Balance und Tageskosten des DeepSeek-API-Kontos als schwebendes Badge im DSH-Web-GUI (127.0.0.1/localhost). Kein API-Key, keine Modellaufrufe — liest nur die Dashboard-Endpunkte der eigenen Platform-Web-Session.
+// @description:en  Shows the topped-up balance and today's cost of the DeepSeek API account as a floating badge in the DSH web GUI (127.0.0.1/localhost). No API key and no model calls — it only reads the dashboard endpoints of your own platform web session.
+// @description:ru  Показывает пополненный баланс и расходы за сегодня аккаунта DeepSeek API в виде плавающего бейджа в веб-интерфейсе DSH (127.0.0.1/localhost). Без API-ключа и вызовов моделей — читает только эндпоинты дашборда вашей веб-сессии на платформе.
 // @author       immerzu
 // @match        https://platform.deepseek.com/*
 // @match        http://127.0.0.1/*
