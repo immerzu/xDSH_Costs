@@ -216,6 +216,34 @@ Nachgewiesen mit `git check-ignore -v .dsh/skills/xdsh-costs-release/SKILL.md`
 Projektwerte (IDs, Pfade, Reihenfolgen) → lokaler Skill unter `.dsh\skills\`, per `.gitignore`
 ausgenommen. Nie Kopien in beiden Welten pflegen — sonst driften sie auseinander.
 
+### 9.4 Dritte Testrunde: Update-Fall („Bitte das Update ausliefern")
+
+Ein dritter Subagent bekam den **Update**-Fall (Datei geändert → ausliefern), wieder **ohne**
+Hinweis auf die Skills. Ergebnis:
+
+- Beide Skills selbst gefunden und geladen: `xdsh-costs-release` → darin benannter
+  Required-Sub-Skill `greasy-fork-publish`.
+- Korrekte Kette: Diff prüfen → `@version` erhöhen → Changelog → Tests → Verteilkopie + Hash →
+  Secret-Prüfung → Commit/Push → GF-Verifikation über `check`/JSON. **Kein** `new`
+  (Duplikat-Regel griff), Fallback-Kette (Admin-Trigger, manueller `version`-Upload) korrekt.
+- Selbst read-only gemessen: Sync-Felder (`SYNC_AUTOMATIC 1`, `INFO_MARKUP_MD 1`), Parser
+  **16/16**, `git grep` **Exit 1** (= keine Secrets).
+- **Zusatzbefund:** Er hat die Prämisse der Aufgabe widerlegt („es gibt nichts auszuliefern" —
+  Arbeitsbaum clean, kein Diff seit v2.0.1) statt blind zu committen. Genau das Verhalten, das
+  die Regel „vor jedem Schreiben messen" bezweckt.
+
+**Nachgeschärft** (im lokalen Skill): neuer Abschnitt „Update-Fall (Auto-Sync) — Erfolgsmarken
+und Erwartungen" mit der Vorbedingung „Diff muss existieren", einer Erfolgsmarken-Tabelle
+(u. a. `git grep` **Exit 1 = Gutzeichen**, `git ls-remote` als read-only Remote-Check) und den
+**zwei noch offenen Punkten**: ob der Repo-Webhook wirklich feuert und ob die GF-Versionsnotiz
+beim Sync leer bleibt — beides ist erst im **ersten echten Sync-Lauf** beobachtbar.
+
+**Ehrliche Einordnung (Antwort auf „Wird das nächste Update besser funktionieren?"):**
+Der **Ablauf** ist jetzt abgesichert und getestet — die Fehlerklassen von gestern
+(`--import-url`, Duplikat, Verifikation per Browser) sind abgedeckt. **Nicht** bewiesen ist der
+Sync-Mechanismus selbst: Er ist eingerichtet, aber noch nie gelaufen. Beim ersten echten Update
+also die Verifikationskette fahren und bei Stillstand die Fallbacks nutzen.
+
 ## 10. Verweise
 
 - Skript: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>
