@@ -58,7 +58,10 @@ Der Repo-Webhook zog im Pilotlauf (v2.0.2, 2026-09-14) **nicht** von selbst — 
 zog sofort. **Zustellung an den Nutzer:** sein Alltagsbrowser hat **keine** Auto-Update-Quelle
 (er importiert die Verteilkopie manuell; `@updateURL`/`@downloadURL` hängt nur GF beim Ausliefern
 an) — bei jedem Release also `!Ausgabe\xdsh-costs-v<version>.user.js` erzeugen und den Import
-nennen. Prüfen mit
+nennen. **Wer über die Greasy-Fork-Seite installiert hat, bekommt Updates dagegen automatisch:**
+GF schreibt `@downloadURL`/`@updateURL` in die installierte Kopie, und die Update-Quelle
+`…/595732/xDSH%20Costs%20%28DSH%29.meta.js` meldet die aktuelle Version (geprüft: HTTP 200,
+`@version 2.0.2`). Prüfen mit
 `node C:\Users\lolo\.dsh\browser-tools\gf-publish.mjs check --url https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh/versions --version <neu>`
 oder per `https://greasyfork.org/scripts/595732.json` (Feld `version`).
 

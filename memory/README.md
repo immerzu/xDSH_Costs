@@ -54,5 +54,8 @@ Dieser Ordner ist das dauerhafte Gedächtnis des Projekts. **Vor** Arbeiten am S
   Verteilkopie `!Ausgabe\xdsh-costs-v<version>.user.js` erzeugt und im Alltagsbrowser importiert.
   Ein Datei-Import hat keine `@updateURL`/`@downloadURL` (die hängt nur Greasy Fork beim
   Ausliefern an), also gibt es dort bewusst **kein** Auto-Update.
+  **Andere Nutzer, die von der GF-Seite installiert haben, bekommen Updates automatisch** — GF
+  schreibt die Update-URLs in die installierte Kopie; die abgefragte `…/595732/…meta.js` meldet
+  die aktuelle Version (geprüft: HTTP 200, `@version 2.0.2`).
 - **Nächster Einstieg:** bei Arbeiten am Skript zuerst `TESTEN-userscript-xdsh-costs.md` fahren;
   bei Unklarheiten zur Platform-Auth die `ANALYSE-…`-Datei lesen (dort der Auth-Beweis).

@@ -311,6 +311,13 @@ Update-Quelle. Zwei Alternativen wurden angeboten (einmalig über die GF-Seite i
 Update-URLs in den Metablock aufnehmen); der Nutzer hat entschieden: **weiter manuell importieren**.
 → Konsequenz für jedes Release: die Verteilkopie bereitstellen und den manuellen Import nennen.
 
+**Wichtig zur Abgrenzung (vom Nutzer zu Recht nachgefragt):** Das betrifft **nur seinen Rechner**.
+**Wer das Skript von der Greasy-Fork-Seite installiert hat, bekommt Updates automatisch** — GF
+schreibt `@downloadURL`/`@updateURL` in die installierte Kopie, und die abgefragte Update-Quelle
+`https://update.greasyfork.org/scripts/595732/xDSH%20Costs%20%28DSH%29.meta.js` antwortet
+**HTTP 200** mit `@version 2.0.2` (gemessen am 2026-09-14). Für die Öffentlichkeit ist der
+GF-Weg also vollständig versorgt; nur der Datei-Import aus `!Ausgabe/` kennt keine Update-Quelle.
+
 ## 11. Verweise
 
 - Skript: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>
