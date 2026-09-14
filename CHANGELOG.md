@@ -2,6 +2,20 @@
 
 Alle nennenswerten Änderungen an diesem Userscript.
 
+## 2.0.2 — 2026-09-14
+
+Kleine echte Verbesserung — und zugleich der **Pilotlauf** für den Greasy-Fork-Auto-Sync.
+
+- **Tooltip zeigt die installierte Skriptversion** (`xDSH Costs v2.0.2`, gelesen aus
+  `GM_info.script.version`). Damit ist sofort sichtbar, welche Fassung der Browser wirklich
+  geladen hat — Tampermonkey aktualisiert nicht immer im selben Moment. Fehlt `GM_info`
+  (anderer Userscript-Manager, Testumgebung), entfällt die Zeile ohne Fehler.
+- Unverändert: Endpunkte, Auth (Bearer-Token), Refresh-Intervalle, GM-Speicher-Schlüssel
+  (`xdsb.*`) und der Badge-Text.
+- Parser-Tests **16/16**, Badge-Verhalten **4/4** (echtes Chromium).
+- Zweck dieser Version: den **erstmaligen echten Sync-Lauf** GitHub → Greasy Fork belegen —
+  bisher war nur die Sync-*Konfiguration* verifiziert, nie ein Durchlauf.
+
 ## 2.0.1 — 2026-09-14
 
 Veröffentlichung auf **Greasy Fork** (Erstveröffentlichung) — **keine funktionalen Änderungen**

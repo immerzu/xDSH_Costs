@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         xDSH Costs (DSH)
 // @namespace    https://github.com/immerzu
-// @version      2.0.1
+// @version      2.0.2
 // @description  Zeigt Topped-up-Balance und Tageskosten des DeepSeek-API-Kontos als schwebendes Badge im DSH-Web-GUI (127.0.0.1/localhost). Kein API-Key, keine Modellaufrufe — liest nur die Dashboard-Endpunkte der eigenen Platform-Web-Session.
 // @description:en  Shows the topped-up balance and today's cost of the DeepSeek API account as a floating badge in the DSH web GUI (127.0.0.1/localhost). No API key and no model calls — it only reads the dashboard endpoints of your own platform web session.
 // @description:ru  Показывает пополненный баланс и расходы за сегодня аккаунта DeepSeek API в виде плавающего бейджа в веб-интерфейсе DSH (127.0.0.1/localhost). Без API-ключа и вызовов моделей — читает только эндпоинты дашборда вашей веб-сессии на платформе.
@@ -76,6 +76,21 @@
     };
 
     const log = (...a) => { if (CFG.DEBUG) console.log('[xDSH Costs]', ...a); };
+
+    /**
+     * Installierte Skriptversion aus dem Userscript-Manager (`GM_info`).
+     * Nur für die Anzeige im Tooltip — hilft zu erkennen, welche Fassung der Browser
+     * wirklich geladen hat (Tampermonkey aktualisiert nicht immer sofort).
+     * Fehlt `GM_info` (anderer Manager, Testumgebung), bleibt die Zeile einfach weg.
+     */
+    function scriptVersion() {
+        try {
+            const info = (typeof GM_info !== 'undefined' && GM_info) ? GM_info.script : null;
+            return info && info.version ? String(info.version) : '';
+        } catch (e) {
+            return '';
+        }
+    }
 
     // =====================================================================
     // #region PURE — reine Funktionen (ohne DOM/GM), testbar in Node
@@ -522,6 +537,8 @@
             '',
             'Klick: platform.deepseek.com/usage öffnen · Ziehen: Position ändern'
         ];
+        const ver = scriptVersion();
+        if (ver) lines.push('', 'xDSH Costs v' + ver);
         return lines.join('\n');
     }
 
