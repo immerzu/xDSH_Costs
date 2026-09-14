@@ -134,7 +134,32 @@ ignoriert) und **keine** `@name:xx`-Zeilen.
 - [ ] Optional: GF-Icon/Screenshot pflegen, Support-URL auf das GitHub-Repo setzen.
 - [ ] Optional: Refresh-Intervall konfigurierbar, Token-Ansicht (`/api/v0/usage/amount`) im Tooltip.
 
-## 9. Verweise
+## 9. Nachgang — Skill `greasy-fork-publish` nachgeschärft (2026-09-14)
+
+Auf Auftrag („Aktualisiere den Skill zum Upload eines Skripts, so dass solche Fehler nicht
+wieder passieren") wurde `C:\Users\lolo\.dsh\skills\greasy-fork-publish\SKILL.md` erweitert:
+
+- **Neue Sackgassen-Tabelle** (alle verifiziert): `new --import-url` → `IMPORT_URL_PREFILL_LEER`
+  (GF befüllt das Codefeld nicht); `/de/scripts/new` → 404; `browse.mjs --eval` → keine Ausgabe
+  (pwsh-Argument-Fallstrick); die Skript-ID steht ohnehin in `GF:NEW_OK`.
+- **Neuer Ablauf „Erstveröffentlichung (B)"** in der bewährten Reihenfolge: Repo fertigstellen →
+  Secret-Prüfung → Push + Rohdatei-Gegenprobe → `new --file` → Admin-Sync (erst `--dry-run`) →
+  HTTP-Verifikation → Doku.
+- **Neuer Abschnitt „Verifikation ohne Browser"** (`/scripts/<ID>.json`, `/versions.json`,
+  Text-Match, Sprachsuchen) samt Locale-Regel: die Locale wird beim Erst-Upload gesetzt und ist
+  danach fix — sie muss zur Sprache der Default-`@description` passen.
+- **Neuer Abschnitt „Keine Secrets hochladen"** (5-Punkte-Raster: Skript, versionierte Dateien,
+  Historie, Rohdatei, nicht versionierte Artefakte).
+- **Fallstricke ergänzt:** Abbruch ≠ Anlage (erst Ist-Zustand messen, sonst Duplikat),
+  `GF:NEW_WAIT_URL_TIMEOUT` ist kein sicherer Fehlschlag, Zusatzinfos erscheinen erst nach dem
+  Sync-Trigger, `--dry-run` vor jedem schreibenden Aufruf.
+- Projektliste um **xDSH Costs (595732)** ergänzt; Katalog-Beschreibung auf Trigger-Stil
+  umgestellt (Erscheinen im Skill-Katalog verifiziert).
+
+Das Skill-Verzeichnis liegt **nicht** in einem Git-Repo (`git rev-parse --show-toplevel` →
+„not a git repository") — die Änderung ist deshalb nur lokal gesichert.
+
+## 10. Verweise
 
 - Skript: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>
 - Repo: <https://github.com/immerzu/xDSH_Costs>
