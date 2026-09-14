@@ -11,12 +11,15 @@ Dieser Ordner ist das dauerhafte Gedächtnis des Projekts. **Vor** Arbeiten am S
 | [`SESSION-20260910-umzug-und-github.md`](SESSION-20260910-umzug-und-github.md) | **Umzug + GitHub im Detail:** Entscheidungen, exakte Änderungen, Belege/Commit-Kette, wiederverwendbare Methodik (Massen-Ersetzung, Hash-Diff, Rest-Suche), aufgedeckte Fehler, Tampermonkey-Umstieg. | 2026-09-10 |
 | [`ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md`](ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md) | **Zentrale Analyse:** Endpunkte, Auth-Beweis (Token ja / Cookies nein), Token-Herkunft, Antwortformen, DOM-Falle, WAF, Umgebungs-Fallstricke, Codeanker. | 2026-09-10 |
 | [`TESTEN-userscript-xdsh-costs.md`](TESTEN-userscript-xdsh-costs.md) | Rezept, wie eine Änderung verifiziert wird (6 Stufen, Befehle, erwartete Checks, Fallstricke). | 2026-09-10 |
+| [`SESSION-20260914-greasy-fork-veroeffentlichung.md`](SESSION-20260914-greasy-fork-veroeffentlichung.md) | **Greasy-Fork-Veröffentlichung v2.0.1 (GF-ID 595732):** Auftrag „keine Secrets", Prüfraster, Metablock-Lokalisierung, Sync-Einrichtung, Belege, Fehler/Lehren, Release-Ablauf ab jetzt. | 2026-09-14 |
 
 ## Kurzfassung des aktuellen Stands
 
-- Skript **v2.0.0**, Quelle `xdsh-costs.user.js`, Verteilkopie
-  `!Ausgabe\xdsh-costs-v2.0.0.user.js` (hash-gleich). Die Vorgängerversion 1.1.0 liegt als
-  Archiv unter `Archiv\xdeepseek-billing-badge-v1.1.0.user.js` (SHA256 `E16586E4AF4A4585…`).
+- Skript **v2.0.1**, Quelle `xdsh-costs.user.js`, Verteilkopie
+  `!Ausgabe\xdsh-costs-v2.0.1.user.js` (hash-gleich `21843ECAD5ACD04E…`). Die Vorgängerversion
+  1.1.0 liegt als Archiv unter `Archiv\xdeepseek-billing-badge-v1.1.0.user.js`
+  (SHA256 `E16586E4AF4A4585…`). 2.0.1 ist **funktional identisch** zu 2.0.0 und brachte nur die
+  Greasy-Fork-Metadaten (`@description:ru`, Bereichs-/Kostenhinweis).
 - **Umzug 2026-09-10:** Projekt von `F:\001_Coding_Projekte\xDeepSeek_Billing_Badge` nach
   `F:\001_Coding_Projekte\xDSH_Costs` umgezogen, Skript von `xdeepseek-billing-badge.user.js`
   in `xdsh-costs.user.js` umbenannt (`@name` „xDSH Costs (DSH)"). Version 2.0.0, weil der
@@ -25,6 +28,12 @@ Dieser Ordner ist das dauerhafte Gedächtnis des Projekts. **Vor** Arbeiten am S
 - **Repository:** <https://github.com/immerzu/xDSH_Costs> (**public**, Branch `main`) — am
   2026-09-10 angelegt und gepusht; `!Ausgabe/` und `out/` sind gitignored, `Archiv/` ist
   bewusst versioniert.
+- **Greasy Fork (2026-09-14):** veröffentlicht als
+  <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh> (**GF-ID 595732**, Locale `de`,
+  MIT). **Auto-Sync aktiv** auf `main/xdsh-costs.user.js` + `main/description.md` → Release
+  künftig per `@version`-Erhöhung und Push. Die frühere Projektentscheidung „kein
+  Greasy-Fork-Listing" ist damit **aufgehoben**. Details:
+  [`SESSION-20260914-greasy-fork-veroeffentlichung.md`](SESSION-20260914-greasy-fork-veroeffentlichung.md).
 - Badge im DSH-GUI unten rechts: `💳 $17.35 · heute $1.59` (grün), Klick öffnet die Usage-Seite,
   Ziehen verschiebt, Tooltip zeigt Details.
 - **Kein API-Key, keine Modellaufrufe** → keine Token-Kosten. Nur die Lese-Endpunkte der

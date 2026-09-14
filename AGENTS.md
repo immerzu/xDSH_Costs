@@ -14,13 +14,15 @@ als schwebendes Badge im DSH-Web-GUI.
 | [`memory/SESSION-20260910-umzug-und-github.md`](memory/SESSION-20260910-umzug-und-github.md) | **Umzug + GitHub im Detail:** Entscheidungen, Änderungen, Belege/Commits, wiederverwendbare Methodik, Tampermonkey-Umstieg |
 | [`memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md`](memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md) | Endpunkte, **Auth-Beweis (Token ja / Cookies nein)**, Token-Herkunft, Antwortformen, DOM-Falle, WAF, Codeanker |
 | [`memory/TESTEN-userscript-xdsh-costs.md`](memory/TESTEN-userscript-xdsh-costs.md) | Testrezept in 6 Stufen mit Befehlen und erwarteten Checks |
+| [`memory/SESSION-20260914-greasy-fork-veroeffentlichung.md`](memory/SESSION-20260914-greasy-fork-veroeffentlichung.md) | **Greasy-Fork-Veröffentlichung (v2.0.1, GF-ID 595732):** Auftrag, Secret-Prüfung, Sync-Einrichtung, Belege, Fehler/Lehren, Release-Ablauf ab jetzt |
 
 ## Installation in Tampermonkey (wichtig nach Umbenennungen)
 
 Das Skript hat **zwei Identitäten**, die Tampermonkey unterscheidet: der `@name` bestimmt, ob ein
 Import ein **Update** oder ein **neues Skript** ist.
 
-- Aktueller Stand: `@name` **xDSH Costs (DSH)**, Datei `xdsh-costs.user.js`, v2.0.0.
+- Aktueller Stand: `@name` **xDSH Costs (DSH)**, Datei `xdsh-costs.user.js`, v2.0.1
+  (auf Greasy Fork veröffentlicht, GF-ID 595732).
 - **Jede Änderung des `@name` ist für Tampermonkey ein neues Skript.** Dann gilt: neues Skript
   importieren **und den alten Eintrag löschen**, sonst laufen beide parallel.
 - Die **GM-Speicher-Schlüssel `xdsb.token` / `xdsb.tokenAt` / `xdsb.snapshot` / `xdsb.pos` sind
@@ -38,6 +40,28 @@ Import ein **Update** oder ein **neues Skript** ist.
 | Erstanlage | 2026-09-10, `gh repo create immerzu/xDSH_Costs --public --source . --remote origin --push` |
 | Nicht im Repo | `!Ausgabe/` (Verteilkopien) und `out/` (Testartefakte) — per `.gitignore`; `Archiv/` ist bewusst versioniert |
 
+## Greasy Fork (veröffentlicht seit 2026-09-14)
+
+| | |
+|---|---|
+| Skriptseite | <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh> (**GF-ID 595732**) |
+| Skript-Locale | **`de`** (von GF beim Erst-Upload erkannt und danach fix) |
+| Auto-Sync Skript | `https://raw.githubusercontent.com/immerzu/xDSH_Costs/main/xdsh-costs.user.js` (`sync_type=automatic`) |
+| Auto-Sync Zusatzinfos | `https://raw.githubusercontent.com/immerzu/xDSH_Costs/main/description.md` (`value_markup=markdown`) |
+| Metablock-Regel | `@description` **ohne Suffix** = Locale-Sprache (hier Deutsch), weitere Sprachen als `@description:en` / `:ru`; **keine** `@name:xx`-Zeilen; jede Zeile ≤ 500 Zeichen |
+| „Zusätzliche Informationen" | `description.md` im Repo-Root, Absätze **DE → RU → EN** |
+
+**Release-Ablauf ab jetzt:** Code ändern → `@version` erhöhen (nie zweimal dieselbe) →
+`CHANGELOG.md` → Tests → Verteilkopie → **Commit + Push auf `main`** → GF zieht die Datei
+automatisch. Prüfen mit
+`node C:\Users\lolo\.dsh\browser-tools\gf-publish.mjs check --url https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh/versions --version <neu>`
+oder per `https://greasyfork.org/scripts/595732.json` (Feld `version`).
+
+**Veröffentlichungsregel:** Vor jedem Upload/Release sicherstellen, dass **keine Secrets** in
+Skript, `description.md` oder Repo stehen. Der Platform-Token wird ausschließlich zur Laufzeit
+aus `localStorage` gelesen und nie geschrieben — Details und Prüfraster:
+[`memory/SESSION-20260914-greasy-fork-veroeffentlichung.md`](memory/SESSION-20260914-greasy-fork-veroeffentlichung.md), Abschnitt 2.
+
 ## Ablageregel (verbindlich)
 
 Alle Informationen und Daten zu diesem Projekt liegen ausschließlich hier:
@@ -49,7 +73,12 @@ Alle Informationen und Daten zu diesem Projekt liegen ausschließlich hier:
 
 ## Zweck und Grenzen
 
-- Ziel ist ein **privates Werkzeug** (DSH-Badge), kein Greasy-Fork-Listing.
+- Ziel ist ein **Werkzeug für den eigenen DSH-Arbeitsplatz**, seit 2026-09-14 zusätzlich
+  **öffentlich auf Greasy Fork** (GF-ID 595732). Es bleibt ein Einzweck-Skript: Badge im
+  DSH-GUI, kein allgemeines Billing-Tool.
+- **Keine Secrets:** Der Platform-Token wird nur zur Laufzeit aus dem `localStorage` des
+  jeweiligen Nutzers gelesen — nie im Code, nie im Repo, nie in `description.md`. Jeder
+  Nutzer authentifiziert sich mit seinem eigenen Browser-Login.
 - Datenquelle sind die **privaten** Dashboard-Endpunkte der Platform-Web-Session
   (`/api/v0/users/get_user_summary`, `/api/v0/usage/cost`). Kein API-Key, keine Modellaufrufe.
 - Authentifizierung **zwingend** über `Authorization: Bearer <userToken>` (localStorage der
@@ -102,7 +131,11 @@ geleert wird — sonst zählen die Anfragen des ersten Seitenaufbaus mit.
 - `C:\Users\lolo\.dsh\browser-tools\lib.mjs` — Chromium/Profil-Konstanten, `launchBrowser()`
 - `C:\Users\lolo\.dsh\browser-tools\tm-import.mjs` — Userscript in Tampermonkey importieren/aktualisieren
 - `C:\Users\lolo\.dsh\browser-tools\browse.mjs` — Seite öffnen, JS ausführen, Screenshot
-- Skills: `tampermonkey-install-update`, `playwright-browser`
+  (Achtung: `--eval` erreicht Node bei pwsh-Aufrufen nicht zuverlässig → für GF lieber HTTP nutzen)
+- `C:\Users\lolo\.dsh\browser-tools\gf-publish.mjs` — Greasy Fork: `status`/`new`/`version`/`check`/`dump`
+- `C:\Users\lolo\.dsh\browser-tools\gf-admin-sync.mjs` — GF-Admin-Sync (Skript-URL + `description.md`) setzen
+- Skills: `tampermonkey-install-update`, `playwright-browser`, `greasy-fork-publish`,
+  `userscript-beschreibungen-immerzu`
 
 ## Werkzeuge (im Projekt)
 
@@ -117,9 +150,12 @@ geleert wird — sonst zählen die Anfragen des ersten Seitenaufbaus mit.
 
 ## Stand
 
-v2.0.0 — **vollständig verifiziert**: Parser-Tests 16/16, Badge-Verhalten 4/4 (echtes
-Chromium), echte TM-Injektion + echte API, **End-to-End mit echtem Konto**
-(`💳 $17.35 · heute $1.59`). In Tampermonkey des Automatisierungsprofils installiert.
+**v2.0.1** — funktional unverändert gegenüber 2.0.0 (nur GF-Metadaten), **vollständig
+verifiziert**: Parser-Tests 16/16, Badge-Verhalten 4/4 (echtes Chromium), echte TM-Injektion +
+echte API, **End-to-End mit echtem Konto** (`💳 $17.35 · heute $1.59`). In Tampermonkey des
+Automatisierungsprofils installiert. **Auf Greasy Fork veröffentlicht** (GF-ID 595732, Locale
+`de`, Auto-Sync aktiv; Details:
+[`memory/SESSION-20260914-greasy-fork-veroeffentlichung.md`](memory/SESSION-20260914-greasy-fork-veroeffentlichung.md)).
 Offen: Neuinstallation im Alltagsbrowser des Nutzers (dort liegt der Platform-Login).
 
 **Hinweis zum Umzug auf 2.0.0 (2026-09-10):** Der `@name` hat sich geändert (vormals

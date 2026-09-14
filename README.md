@@ -66,6 +66,12 @@ Monatskosten, Tagesdatum und Aktualisierungszeit.
 
 ## Installation
 
+**Am einfachsten über Greasy Fork:**
+<https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh> → „Installieren" (Tampermonkey
+zeigt den üblichen Bestätigungsdialog). Dort ist die Datei automatisch aktuell.
+
+Aus dem Repo bzw. aus `!Ausgabe/`:
+
 1. Tampermonkey im Browser installiert.
 2. `xdsh-costs.user.js` (bzw. die Version aus `!Ausgabe/`) in Tampermonkey
    importieren:
@@ -80,6 +86,24 @@ Monatskosten, Tagesdatum und Aktualisierungszeit.
 > den alten Tampermonkey-Eintrag **löschen**, sonst laufen beide Badges parallel. Die
 > GM-Speicher-Schlüssel (`xdsb.*`) wurden bewusst beibehalten, Token und letzter Stand sind
 > also sofort wieder da.
+
+## Greasy Fork (Veröffentlichung)
+
+Veröffentlicht seit 2026-09-14: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>
+(GF-ID 595732, Lizenz MIT, Skript-Locale `de`).
+
+- **Auto-Sync ist aktiv:** Greasy Fork zieht das Skript aus `main/xdsh-costs.user.js` und die
+  „Zusätzlichen Informationen" aus `main/description.md`. Ein manueller Upload ist nicht nötig —
+  es genügt, `@version` zu erhöhen und zu pushen.
+- **Sprachen:** `@description` ohne Suffix ist die Sprache der GF-Skript-Locale (hier Deutsch);
+  `@description:en` und `@description:ru` erzeugen die Einträge für die englische und russische
+  Suche. Deshalb **keine** Mischtext-Zeilen („DE / EN / RU" in einer Zeile) und **keine**
+  `@name:xx`-Zeilen.
+- **Keine Secrets:** Im Skript stehen keine Tokens, Keys oder Zugangsdaten. Der Platform-Token
+  wird ausschließlich zur Laufzeit aus dem `localStorage` gelesen (`readPlatformToken()`), nie
+  geschrieben und nie geloggt.
+- Details, Belege und die Stolpersteine der Erstveröffentlichung:
+  [`memory/SESSION-20260914-greasy-fork-veroeffentlichung.md`](memory/SESSION-20260914-greasy-fork-veroeffentlichung.md).
 
 ## Entwicklung / Tests
 
@@ -117,7 +141,8 @@ Der Token wird nie im Klartext geschrieben (nur Länge/Präfix).
 | `tools/live-check.mjs` | Live-Probe der echten Endpunkte (mit und ohne Token) |
 | `tools/live-parse.mjs` | Wertet die echten Antworten mit den Skript-Parsern aus |
 | `tools/tm-import-diagnose.mjs` | Tampermonkey-Import mit Diagnose (siehe Fallstricke) |
-| `memory/` | **Projektgedächtnis** — Index in [`memory/README.md`](memory/README.md) (Handover, Analyse der Endpunkte/Auth, Testrezept) |
+| `memory/` | **Projektgedächtnis** — Index in [`memory/README.md`](memory/README.md) (Handover, Analyse der Endpunkte/Auth, Testrezept, Greasy-Fork-Veröffentlichung) |
+| `description.md` | „Zusätzliche Informationen" für die Greasy-Fork-Seite (Absätze DE → RU → EN), per Auto-Sync gepflegt |
 | `docs/specs/` | Design-/Umzugs-Specs (z. B. Umzug nach `xDSH_Costs`, 2026-09-10) |
 | `Archiv/` | Vorgängerversionen zur Nachvollziehbarkeit (`xdeepseek-billing-badge-v1.1.0.user.js`) |
 | `out/` | Testartefakte (Proben, Screenshots) |
