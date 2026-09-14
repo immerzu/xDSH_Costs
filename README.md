@@ -92,9 +92,13 @@ Aus dem Repo bzw. aus `!Ausgabe/`:
 Veröffentlicht seit 2026-09-14: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>
 (GF-ID 595732, Lizenz MIT, Skript-Locale `de`).
 
-- **Auto-Sync ist aktiv:** Greasy Fork zieht das Skript aus `main/xdsh-costs.user.js` und die
-  „Zusätzlichen Informationen" aus `main/description.md`. Ein manueller Upload ist nicht nötig —
-  es genügt, `@version` zu erhöhen und zu pushen.
+- **Auto-Sync ist eingerichtet** (Skript aus `main/xdsh-costs.user.js`, Zusatzinfos aus
+  `main/description.md`). Ein manueller Upload ist nicht nötig — der Repo-Webhook zog im
+  Pilotlauf (v2.0.2) aber **nicht von selbst**: nach `@version`-Erhöhung und Push wird der Sync
+  im GF-Admin angestoßen (`gf-admin-sync.mjs`) und über
+  `https://greasyfork.org/scripts/595732.json` (`version`, `code_updated_at`) verifiziert.
+  Zu jeder Version entsteht zusätzlich ein GitHub-Release
+  (`gh release create v<version> --title … --notes … --target main`).
 - **Sprachen:** `@description` ohne Suffix ist die Sprache der GF-Skript-Locale (hier Deutsch);
   `@description:en` und `@description:ru` erzeugen die Einträge für die englische und russische
   Suche. Deshalb **keine** Mischtext-Zeilen („DE / EN / RU" in einer Zeile) und **keine**

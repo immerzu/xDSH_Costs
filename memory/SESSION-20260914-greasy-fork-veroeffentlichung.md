@@ -244,7 +244,52 @@ Der **Ablauf** ist jetzt abgesichert und getestet — die Fehlerklassen von gest
 Sync-Mechanismus selbst: Er ist eingerichtet, aber noch nie gelaufen. Beim ersten echten Update
 also die Verifikationskette fahren und bei Stillstand die Fallbacks nutzen.
 
-## 10. Verweise
+## 10. Pilotlauf v2.0.2 — der erste echte Sync (2026-09-14)
+
+Auftrag: „Erstelle eine Version 2.0.2 und teste die Veröffentlichung! Passe anschließend den
+Skill an, dass er ohne Fehler durchläuft."
+
+**Die Version (echter, kleiner Nutzen statt Leerlauf):** Der Tooltip zeigt jetzt die
+**installierte Skriptversion** (`xDSH Costs v2.0.2`), gelesen aus `GM_info.script.version` über
+die neue Funktion `scriptVersion()`. Damit ist sofort erkennbar, welche Fassung der Browser
+wirklich geladen hat — Tampermonkey aktualisiert nicht immer im selben Moment. Fehlt `GM_info`
+(anderer Manager, Testumgebung), entfällt die Zeile ohne Fehler (try/catch). Sonst nichts
+geändert: Endpunkte, Auth, Intervalle, GM-Schlüssel (`xdsb.*`), Badge-Text.
+
+**Ablauf (alles gemessen):**
+
+| Schritt | Ergebnis |
+|---|---|
+| `node --check` · Parser · Badge | Exit 0 · **16/16** · **4/4** |
+| Verteilkopie `!Ausgabe\xdsh-costs-v2.0.2.user.js` | hash-gleich `2561B92941CFEB18…` |
+| Secret-Prüfung (`git grep`) | **Exit 1** = keine Treffer |
+| Commit + Push | `17755fb`, Push um **05:26:27Z** |
+| **Auto-Sync (Webhook)** | **zog nicht** — nach ~4 Min stand GF noch auf `2.0.1` (`code_updated_at 05:00:55Z`) |
+| **Admin-Trigger** (`gf-admin-sync.mjs`) | **zog sofort** → GF `2.0.2`, `code_updated_at 05:31:09Z` |
+| Versionsseite | nennt `2.0.2` |
+| **GF-Versionsnotiz** | **leer** — die Seite enthält „2.0.2", aber keinen Changelog-Text (der Sync setzt ihn nicht) |
+| GitHub-Release | `gh release create v2.0.2 … --target main` → Tag `v2.0.2` = `17755fb`, Releases-Seite nicht mehr leer |
+
+**Zwei bisher offene Fragen sind damit beantwortet:** (1) Der Webhook ist **nicht** der
+verlässliche Weg — nach dem Push messen und den Admin-Trigger setzen. (2) Die GF-Versionsnotiz
+bleibt beim Sync **leer**; für eine sichtbare Notiz braucht es den manuellen Upload mit
+`--changelog`.
+
+**Skill-Anpassung (Auftragsteil 2):**
+
+- **Lokal** (`.dsh\skills\xdsh-costs-release\SKILL.md`): Schritt 8 „Sync ziehen lassen — nicht auf
+  den Webhook warten", Schritt 9 GitHub-Release, und der Abschnitt „Update-Fall" enthält jetzt
+  die **Messtabelle des Pilotlaufs** samt Befehlen (Messung mit Cache-Buster + Admin-Trigger).
+- **Global** (`greasy-fork-publish`): Ablauf C neu gefasst — messen → triggern → Fallback,
+  Versionsnotiz-Hinweis, GitHub-Releases als optionale Doku (für GF irrelevant).
+- **Projektdoku:** `AGENTS.md` und `README.md` behaupteten „GF zieht die Datei automatisch" —
+  **korrigiert** auf „GF-Sync anstoßen und verifizieren" plus GitHub-Release-Schritt.
+
+**Nebenbefund:** Der Nutzer monierte zu Recht, dass die Antwort ausblieb, während ein langer
+Beobachtungslauf lief („Hallo?"). Lehre: Bei mehrminütigen Messläufen **zwischendurch** antworten
+oder den Lauf im Hintergrund führen, statt die Antwort bis zum Ende zurückzuhalten.
+
+## 11. Verweise
 
 - Skript: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>
 - Repo: <https://github.com/immerzu/xDSH_Costs>
