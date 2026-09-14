@@ -180,9 +180,11 @@ Kopiervorgang auf die bereits umbenannte Zieldatei zeigte. Behoben durch Rückko
 
 ## 8. Offene Punkte
 
-- [ ] **Neuinstallation im Alltagsbrowser** (dort liegt der Platform-Login) + alten
-      Tampermonkey-Eintrag löschen.
-- [ ] Sichtprüfung im **echten DSH-GUI** (der End-to-End-Test lief auf einer DSH-ähnlichen Seite).
+- [x] **Neuinstallation im Alltagsbrowser** — **erledigt**, am 2026-09-14 im Betrieb bestätigt
+      (Nutzer sieht die neue Tooltip-Zeile `xDSH Costs v2.0.x` im Badge; dort liegt der
+      Platform-Login). Details: `SESSION-20260914-greasy-fork-veroeffentlichung.md`, Abschnitt 10.
+- [x] Sichtprüfung im **echten DSH-GUI** — mit erledigt: das Badge existiert nur im DSH-Kontext,
+      die bestätigte Beobachtung stammt also von dort.
 - [ ] Optional: Refresh-Intervall konfigurierbar machen.
 - [ ] Optional: Token-Ansicht (`/api/v0/usage/amount`) im Tooltip ergänzen (Endpunkt HTTP 200 verifiziert).
 - [ ] Optional: Repo-Beschreibung/`Topics` auf GitHub ergänzen (derzeit nur Beschreibungstext).

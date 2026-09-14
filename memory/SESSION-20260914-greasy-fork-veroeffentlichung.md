@@ -128,9 +128,11 @@ ignoriert) und **keine** `@name:xx`-Zeilen.
 
 ## 8. Offene Punkte
 
-- [ ] **Neuinstallation im Alltagsbrowser** des Nutzers (dort liegt der Platform-Login) —
-      weiterhin offen aus der Vorsession; jetzt zusätzlich bequem über die GF-Seite möglich.
-- [ ] **Sync-Probe:** nächste echte Versionserhöhung beobachten (Push → GF zieht automatisch).
+- [x] **Neuinstallation im Alltagsbrowser** des Nutzers — **erledigt** (2026-09-14 vom Nutzer
+      bestätigt: Skript läuft dort, Tooltip-Zeile `xDSH Costs v2.0.x` im Badge sichtbar; siehe
+      Abschnitt 10).
+- [x] **Sync-Probe:** am 2026-09-14 mit v2.0.2 durchgeführt — der Webhook zog nicht von selbst,
+      der Admin-Trigger sofort (Messwerte in Abschnitt 10).
 - [ ] Optional: GF-Icon/Screenshot pflegen, Support-URL auf das GitHub-Repo setzen.
 - [ ] Optional: Refresh-Intervall konfigurierbar, Token-Ansicht (`/api/v0/usage/amount`) im Tooltip.
 
