@@ -159,6 +159,39 @@ wieder passieren") wurde `C:\Users\lolo\.dsh\skills\greasy-fork-publish\SKILL.md
 Das Skill-Verzeichnis liegt **nicht** in einem Git-Repo (`git rev-parse --show-toplevel` →
 „not a git repository") — die Änderung ist deshalb nur lokal gesichert.
 
+### 9.1 Wirksamkeitsprüfung (Subagenten, 2 Runden)
+
+**Runde 1 (Retrieval):** Ein Subagent mit frischem Kontext bekam die Aufgabe „Skript erstmals
+veröffentlichen" und **ohne** Hinweis auf den Skill. Ergebnis: Skill selbst gefunden und geladen
+✓, Sackgassen korrekt gemieden ✓, HTTP-Verifikation genutzt ✓ — **aber** er musste die
+Existenzprüfung selbst erfinden; der Skill verlangte sie nirgends. Genau daraus hätte ein
+Duplikat entstehen können (`new` für ein bereits existierendes Skript).
+
+**Nachschärfung:** Schritt **0 „Existenzprüfung — Pflicht, sonst Duplikat"** in Ablauf B,
+neuer Fallstrick („`new` ohne Existenzprüfung = Duplikat"), Merksatz in „Wichtig"
+(„Vor jedem Schreiben messen"), Hinweis zur Nicht-Prüfbarkeit des Webhooks per HTTP, sowie der
+Falschtreffer-Hinweis beim Secret-Muster (`[A-Za-z0-9_-]{32,}` trifft auch Pfade/Hashes).
+
+**Runde 2 (Re-Test, gleiche Aufgabe ohne Existenz-Hinweis):** Skill geladen ✓, Ist-Zustand
+**zuerst gemessen** (`/scripts/595732.json`, `/versions.json`, lokale vs. GF-Version,
+`gf-admin-sync --dry-run`), daraus „Update/Sync, kein `new`" abgeleitet ✓, identische Version
+korrekt als „kein Upload nötig" erkannt ✓, schreibende Schritte nur beschrieben statt
+ausgeführt ✓. **Lücke geschlossen.**
+
+### 9.2 Nebenbefund aus Runde 2: Sync ist live bestätigt
+
+Der Subagent hat die GF-Admin-Sync-Felder read-only ausgelesen (`gf-admin-sync.mjs --dry-run`):
+
+```
+SYNC_IDENTIFIER   "https://raw.githubusercontent.com/immerzu/xDSH_Costs/main/xdsh-costs.user.js"
+SYNC_AUTOMATIC 1  MANUAL 0
+INFO_SYNC_IDENTIFIER "https://raw.githubusercontent.com/immerzu/xDSH_Costs/main/description.md"
+INFO_MARKUP_MD 1  HTML 0
+```
+
+Damit ist unabhängig belegt, dass der Auto-Sync (Skript **und** Zusatzinfos) tatsächlich
+eingerichtet ist — nicht nur zum Zeitpunkt des Setzens, sondern im Ist-Zustand.
+
 ## 10. Verweise
 
 - Skript: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>
