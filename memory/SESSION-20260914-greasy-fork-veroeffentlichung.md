@@ -289,6 +289,17 @@ bleibt beim Sync **leer**; für eine sichtbare Notiz braucht es den manuellen Up
 Beobachtungslauf lief („Hallo?"). Lehre: Bei mehrminütigen Messläufen **zwischendurch** antworten
 oder den Lauf im Hintergrund führen, statt die Antwort bis zum Ende zurückzuhalten.
 
+**Verifikation am lebenden Badge — erledigt (Nutzerbeobachtung):** Ich hatte behauptet, das Skript
+sei im Alltagsbrowser „noch nicht installiert" (so stand es seit 2026-09-10 im Gedächtnis) — das
+war **falsch** und vom Nutzer korrigiert. Er hat das Skript in seinem Alltagsbrowser laufen und
+dort die neue Tooltip-Zeile `xDSH Costs v2.0.x` gesehen — ein besserer Beweis als jeder Testlauf,
+weil er den echten Weg (GF → Tampermonkey → DSH-GUI) abdeckt. Ob die Fassung per
+Tampermonkey-Auto-Update von Greasy Fork oder per manuellem Import ankam, ist **nicht gemessen**.
+Damit sind zugleich die beiden seit dem 10.09. offenen Punkte „Neuinstallation im Alltagsbrowser"
+und „Sichtprüfung im echten DSH-GUI" erledigt (das Badge existiert nur im DSH-Kontext).
+**Lehre:** Browser-/Installationszustände **nie aus dem Gedächtnis als Fakt ausgeben** — veraltete
+„offen"-Markierungen sind keine Messung; im Zweifel den Nutzer fragen.
+
 ## 11. Verweise
 
 - Skript: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>

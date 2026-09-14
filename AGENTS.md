@@ -167,7 +167,9 @@ Chromium), echte TM-Injektion + echte API, **End-to-End mit echtem Konto**
 2026-09-14 mit v2.0.2 bestanden** — Details:
 [`memory/SESSION-20260914-greasy-fork-veroeffentlichung.md`](memory/SESSION-20260914-greasy-fork-veroeffentlichung.md),
 Abschnitte 9–10). GitHub-Release `v2.0.2` angelegt.
-Offen: Neuinstallation im Alltagsbrowser des Nutzers (dort liegt der Platform-Login).
+**Im Alltagsbrowser des Nutzers installiert und im Betrieb bestätigt** (2026-09-14: Nutzer hat die
+neue Tooltip-Zeile `xDSH Costs v2.0.x` im laufenden Badge gesehen) — die frühere Angabe „dort noch
+offen" war veraltet.
 
 **Hinweis zum Umzug auf 2.0.0 (2026-09-10):** Der `@name` hat sich geändert (vormals
 „xDeepSeek Billing Badge (DSH)") — Tampermonkey behandelt das als **neues Skript**, ein
