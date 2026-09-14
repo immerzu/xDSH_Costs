@@ -55,7 +55,10 @@ Import ein **Update** oder ein **neues Skript** ist.
 `CHANGELOG.md` → Tests → Verteilkopie → **Commit + Push auf `main`** → **GF-Sync anstoßen und
 verifizieren** → **GitHub-Release** (`gh release create v<version> --title … --notes … --target main`).
 Der Repo-Webhook zog im Pilotlauf (v2.0.2, 2026-09-14) **nicht** von selbst — der Admin-Trigger
-zog sofort. Prüfen mit
+zog sofort. **Zustellung an den Nutzer:** sein Alltagsbrowser hat **keine** Auto-Update-Quelle
+(er importiert die Verteilkopie manuell; `@updateURL`/`@downloadURL` hängt nur GF beim Ausliefern
+an) — bei jedem Release also `!Ausgabe\xdsh-costs-v<version>.user.js` erzeugen und den Import
+nennen. Prüfen mit
 `node C:\Users\lolo\.dsh\browser-tools\gf-publish.mjs check --url https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh/versions --version <neu>`
 oder per `https://greasyfork.org/scripts/595732.json` (Feld `version`).
 

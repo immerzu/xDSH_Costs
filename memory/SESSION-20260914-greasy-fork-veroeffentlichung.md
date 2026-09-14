@@ -302,6 +302,15 @@ und „Sichtprüfung im echten DSH-GUI" erledigt (das Badge existiert nur im DSH
 **Lehre:** Browser-/Installationszustände **nie aus dem Gedächtnis als Fakt ausgeben** — veraltete
 „offen"-Markierungen sind keine Messung; im Zweifel den Nutzer fragen.
 
+**Zustellweg des Nutzers (geklärt 2026-09-14):** Er hat v2.0.2 **manuell importiert** — nicht per
+Tampermonkey-Auto-Update. Ursache, gemessen: Im Skript (Repo/Verteilkopie) stehen **keine**
+`@updateURL`/`@downloadURL`-Zeilen; Greasy Fork hängt sie erst beim Ausliefern an
+(`@downloadURL …/595732/xDSH%20Costs%20%28DSH%29.user.js`,
+`@updateURL …/595732/xDSH%20Costs%20%28DSH%29.meta.js`). Ein Datei-Import kennt damit **keine**
+Update-Quelle. Zwei Alternativen wurden angeboten (einmalig über die GF-Seite installieren **oder**
+Update-URLs in den Metablock aufnehmen); der Nutzer hat entschieden: **weiter manuell importieren**.
+→ Konsequenz für jedes Release: die Verteilkopie bereitstellen und den manuellen Import nennen.
+
 ## 11. Verweise
 
 - Skript: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>

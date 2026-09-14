@@ -50,5 +50,9 @@ Dieser Ordner ist das dauerhafte Gedächtnis des Projekts. **Vor** Arbeiten am S
   laufenden Badge sichtbar. Ebenfalls im Automatisierungsprofil (`reasonix-profil`) installiert.
   Beim Umstieg auf 2.0.0 war das **alte** Skript („xDeepSeek Billing Badge (DSH)") zu löschen,
   weil der neue `@name` in Tampermonkey ein neues Skript ist.
+- **Updates kommen dorthin manuell** (Entscheidung 2026-09-14): Neue Versionen werden als
+  Verteilkopie `!Ausgabe\xdsh-costs-v<version>.user.js` erzeugt und im Alltagsbrowser importiert.
+  Ein Datei-Import hat keine `@updateURL`/`@downloadURL` (die hängt nur Greasy Fork beim
+  Ausliefern an), also gibt es dort bewusst **kein** Auto-Update.
 - **Nächster Einstieg:** bei Arbeiten am Skript zuerst `TESTEN-userscript-xdsh-costs.md` fahren;
   bei Unklarheiten zur Platform-Auth die `ANALYSE-…`-Datei lesen (dort der Auth-Beweis).
