@@ -14,5 +14,8 @@ out/
 Ausgabe/
 \!Ausgabe/
 
+# Projektlokale DSH-Daten (u. a. Skills) — nur lokal, das Repo ist public
+/.dsh/
+
 # Hinweis: Archiv/ (Vorgängerversionen zur Nachvollziehbarkeit) wird bewusst
 # versioniert und ist deshalb hier NICHT ausgenommen.

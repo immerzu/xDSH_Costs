@@ -192,6 +192,30 @@ INFO_MARKUP_MD 1  HTML 0
 Damit ist unabhängig belegt, dass der Auto-Sync (Skript **und** Zusatzinfos) tatsächlich
 eingerichtet ist — nicht nur zum Zeitpunkt des Setzens, sondern im Ist-Zustand.
 
+### 9.3 Aufteilung: generischer globaler Skill + projektspezifischer lokaler Skill
+
+Nutzerauftrag: „Der Skill soll speziell für unser Skript nur lokal abgelegt werden."
+
+| Wo | Was |
+|---|---|
+| `C:\Users\lolo\.dsh\skills\greasy-fork-publish\SKILL.md` (global) | **generisch**: Sackgassen, Secret-Raster, HTTP-Verifikation, Ablauf A/B/C, Admin-Sync-Felder, immerzu-Konventionen. Die xDSH-spezifischen Werte wurden **entfernt** — dort steht nur noch ein Verweis. |
+| `F:\001_Coding_Projekte\xDSH_Costs\.dsh\skills\xdsh-costs-release\SKILL.md` (**lokal**) | **projektspezifisch**: GF-ID 595732, Slug, Sync-URLs, GM-Schlüssel, Testreihenfolge, Verteilkopie, projektspezifische Fallen, konkrete Verifikationskommandos. |
+
+**Warum `.dsh\skills\` und nicht `skills\`:** Die Discovery des Harness
+(`@deepseek-ai/dsh-skill-filesystem`) scannt im Projekt genau
+`<projekt>/.dsh/skills` und `<projekt>/.agents/skills` — ein reiner `skills/`-Ordner wird
+**nicht** gefunden. Beide Orte liegen innerhalb des Projektordners; `.dsh\skills\` erfüllt damit
+„nur lokal im Projekt" **und** ist als Skill ladbar (Katalog-Eintrag `xdsh-costs-release`
+verifiziert).
+
+**Nur lokal, nicht public:** Das Repo ist öffentlich, deshalb steht `/.dsh/` in `.gitignore`.
+Nachgewiesen mit `git check-ignore -v .dsh/skills/xdsh-costs-release/SKILL.md`
+(→ `.gitignore:18:/.dsh/`) und `git status --short --ignored` (→ `!! .dsh/`).
+
+**Lehre für künftige Skills dieses Projekts:** generische Mechanik → globaler Skill;
+Projektwerte (IDs, Pfade, Reihenfolgen) → lokaler Skill unter `.dsh\skills\`, per `.gitignore`
+ausgenommen. Nie Kopien in beiden Welten pflegen — sonst driften sie auseinander.
+
 ## 10. Verweise
 
 - Skript: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>

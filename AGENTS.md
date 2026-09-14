@@ -62,6 +62,13 @@ Skript, `description.md` oder Repo stehen. Der Platform-Token wird ausschließli
 aus `localStorage` gelesen und nie geschrieben — Details und Prüfraster:
 [`memory/SESSION-20260914-greasy-fork-veroeffentlichung.md`](memory/SESSION-20260914-greasy-fork-veroeffentlichung.md), Abschnitt 2.
 
+**Projektspezifisches Release-Rezept (nur lokal):** `.dsh\skills\xdsh-costs-release\SKILL.md` —
+GF-ID, Sync-URLs, GM-Schlüssel, Testreihenfolge, Verteilkopie und die konkreten
+Verifikationskommandos für dieses Skript. Der Ordner ist per `/.dsh/` von Git **ausgenommen**
+(das Repo ist public) und darf dort bleiben, wo er ist. Generische Greasy-Fork-Mechanik
+(Sackgassen, Secret-Raster, HTTP-Verifikation) steht weiterhin im globalen Skill
+`greasy-fork-publish` — nicht doppelt pflegen.
+
 ## Ablageregel (verbindlich)
 
 Alle Informationen und Daten zu diesem Projekt liegen ausschließlich hier:
