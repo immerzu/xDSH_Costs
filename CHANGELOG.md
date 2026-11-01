@@ -15,6 +15,8 @@ Alle nennenswerten Änderungen an diesem Userscript.
 - Explizit getestet: Die Rechnerzeit wird sowohl in deutscher Winterzeit (`UTC+1`) als auch
   Sommerzeit (`UTC+2`) korrekt in die UTC-Preisfenster umgerechnet.
 - Die Zeitanzeige aktualisiert sich alle 30 Sekunden ohne zusätzlichen API-Aufruf.
+- Veröffentlicht über den Greasy-Fork-Admin-Sync; öffentliche Skriptseite, Versionsseite und
+  Update-`meta.js` melden v2.0.3. GitHub-Release `v2.0.3` zeigt auf Code-Commit `ec98747`.
 
 ## 2.0.2 — 2026-09-14
 

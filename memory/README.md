@@ -12,18 +12,18 @@ Dieser Ordner ist das dauerhafte Gedächtnis des Projekts. **Vor** Arbeiten am S
 | [`ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md`](ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md) | **Zentrale Analyse:** Endpunkte, Auth-Beweis (Token ja / Cookies nein), Token-Herkunft, Antwortformen, DOM-Falle, WAF, Umgebungs-Fallstricke, Codeanker. | 2026-09-10 |
 | [`TESTEN-userscript-xdsh-costs.md`](TESTEN-userscript-xdsh-costs.md) | Rezept, wie eine Änderung verifiziert wird (6 Stufen, Befehle, erwartete Checks, Fallstricke). | 2026-09-10 |
 | [`SESSION-20260914-greasy-fork-veroeffentlichung.md`](SESSION-20260914-greasy-fork-veroeffentlichung.md) | **Greasy-Fork-Veröffentlichung v2.0.1/v2.0.2 (GF-ID 595732):** Auftrag „keine Secrets", Prüfraster, Metablock-Lokalisierung, Sync-Einrichtung, Belege, Fehler/Lehren; **Abschnitt 10: Pilotlauf des Syncs mit v2.0.2** (Webhook zog nicht, Admin-Trigger sofort, Versionsnotiz leer). | 2026-09-14 |
-| [`SESSION-20261101-peak-flamme.md`](SESSION-20261101-peak-flamme.md) | **Lokaler Kandidat v2.0.3:** kompakte Peak-Flamme, UTC-/Feiertagslogik, Layoutmessung, Playwright-Fallback und offene Veröffentlichung. | 2026-11-01 |
+| [`SESSION-20261101-peak-flamme.md`](SESSION-20261101-peak-flamme.md) | **Release v2.0.3:** kompakte Peak-Flamme, UTC-/Feiertagslogik, Layoutmessung, GitHub-/Greasy-Fork-Veröffentlichung, Cloudflare-Lehre und Cookie-Erhalt. | 2026-11-01 |
 
 ## Kurzfassung des aktuellen Stands
 
-- Lokaler Kandidat **v2.0.3**, Quelle `xdsh-costs.user.js`: kleine Peak-Flamme rechts im
+- Aktueller veröffentlichter Stand **v2.0.3**, Quelle `xdsh-costs.user.js`: kleine Peak-Flamme rechts im
   unverändert großen Badge, UTC-/Feiertagslogik, 19/19 Parser-/Zeitregeltests (inkl. deutscher
   Sommer-/Winterzeit) und 4/4
-  Chromium-Fälle. **Noch nicht veröffentlicht oder installiert**; Greasy Fork/GitHub stehen
-  weiterhin auf v2.0.2. Die Verteilkopie ist `!Ausgabe\xdsh-costs-v2.0.3.user.js`, 37.374 Bytes,
+  Chromium-Fälle. Greasy Fork, `main` und GitHub-Release stehen auf v2.0.3; im Alltagsbrowser
+  bleibt der manuelle Import offen. Die Verteilkopie ist `!Ausgabe\xdsh-costs-v2.0.3.user.js`, 37.374 Bytes,
   SHA-256 `C0D977A5722D1B4C…` und hash-gleich zur Quelle.
-- Veröffentlichter Stand **v2.0.2** brachte die Skriptversion im Tooltip (`GM_info`) und war der
-  **Pilotlauf** des GF-Syncs; die Vorgängerversion
+- v2.0.2 brachte zuvor die Skriptversion im Tooltip (`GM_info`) und war der **Pilotlauf** des
+  GF-Syncs; die Vorgängerversion
   1.1.0 liegt als Archiv unter `Archiv\xdeepseek-billing-badge-v1.1.0.user.js`
   (SHA256 `E16586E4AF4A4585…`).
 - **Umzug 2026-09-10:** Projekt von `F:\001_Coding_Projekte\xDeepSeek_Billing_Badge` nach

@@ -15,15 +15,15 @@ als schwebendes Badge im DSH-Web-GUI.
 | [`memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md`](memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md) | Endpunkte, **Auth-Beweis (Token ja / Cookies nein)**, Token-Herkunft, Antwortformen, DOM-Falle, WAF, Codeanker |
 | [`memory/TESTEN-userscript-xdsh-costs.md`](memory/TESTEN-userscript-xdsh-costs.md) | Testrezept in 6 Stufen mit Befehlen und erwarteten Checks |
 | [`memory/SESSION-20260914-greasy-fork-veroeffentlichung.md`](memory/SESSION-20260914-greasy-fork-veroeffentlichung.md) | **Greasy-Fork-Veröffentlichung (v2.0.1/v2.0.2, GF-ID 595732):** Auftrag, Secret-Prüfung, Sync-Einrichtung, Belege, Fehler/Lehren; Abschnitt 10: **Pilotlauf des Syncs mit v2.0.2** |
-| [`memory/SESSION-20261101-peak-flamme.md`](memory/SESSION-20261101-peak-flamme.md) | **v2.0.3 lokal:** Peak-Flamme ohne Größenänderung, UTC-/Feiertagslogik, Tests und offene Veröffentlichung |
+| [`memory/SESSION-20261101-peak-flamme.md`](memory/SESSION-20261101-peak-flamme.md) | **v2.0.3 veröffentlicht:** Peak-Flamme ohne Größenänderung, UTC-/Feiertagslogik, Tests, GitHub-/Greasy-Fork-Belege und Browserprofil-Regel |
 
 ## Installation in Tampermonkey (wichtig nach Umbenennungen)
 
 Das Skript hat **zwei Identitäten**, die Tampermonkey unterscheidet: der `@name` bestimmt, ob ein
 Import ein **Update** oder ein **neues Skript** ist.
 
-- Lokaler Stand: `@name` **xDSH Costs (DSH)**, Datei `xdsh-costs.user.js`, **v2.0.3**.
-  Veröffentlichter Stand auf Greasy Fork/GitHub bleibt bis zum Release **v2.0.2** (GF-ID 595732).
+- Aktueller und veröffentlichter Stand: `@name` **xDSH Costs (DSH)**, Datei
+  `xdsh-costs.user.js`, **v2.0.3** (Greasy Fork GF-ID 595732 und GitHub-Release).
 - **Jede Änderung des `@name` ist für Tampermonkey ein neues Skript.** Dann gilt: neues Skript
   importieren **und den alten Eintrag löschen**, sonst laufen beide parallel.
 - Die **GM-Speicher-Schlüssel `xdsb.token` / `xdsb.tokenAt` / `xdsb.snapshot` / `xdsb.pos` sind
@@ -62,7 +62,7 @@ an) — bei jedem Release also `!Ausgabe\xdsh-costs-v<version>.user.js` erzeugen
 nennen. **Wer über die Greasy-Fork-Seite installiert hat, bekommt Updates dagegen automatisch:**
 GF schreibt `@downloadURL`/`@updateURL` in die installierte Kopie, und die Update-Quelle
 `…/595732/xDSH%20Costs%20%28DSH%29.meta.js` meldet die aktuelle Version (geprüft: HTTP 200,
-`@version 2.0.2`). Prüfen mit
+`@version 2.0.3`). Prüfen mit
 `node C:\Users\lolo\.dsh\browser-tools\gf-publish.mjs check --url https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh/versions --version <neu>`
 oder per `https://greasyfork.org/scripts/595732.json` (Feld `version`).
 
@@ -166,21 +166,21 @@ geleert wird — sonst zählen die Anfragen des ersten Seitenaufbaus mit.
 
 ## Stand
 
-**Lokaler Kandidat v2.0.3** — während der DeepSeek-Peak-Zeit erscheint rechts im vorhandenen
+**v2.0.3** — während der DeepSeek-Peak-Zeit erscheint rechts im vorhandenen
 Badge eine kleine Flamme, ohne Text-, Breiten- oder Höhenänderung. Peak wird rein lokal aus der
 Systemzeit als UTC bestimmt (Mo–Fr 01:00–04:00 und 06:00–10:00 UTC; Wochenenden und chinesische
 Feiertage Off-Peak). Amtlicher Feiertagsplan 2026 plus gesetzlicher Rückfall für spätere Jahre.
 Verifiziert: Syntax Exit 0, Parser-/Zeitregeln **19/19** (inkl. UTC+1/UTC+2), Badge-Verhalten **4/4** im echten
 Chromium; gemessene Badge-Größe mit/ohne Flamme identisch (`202.3125 × 30.796875 px`).
-**Noch nicht veröffentlicht, gepusht oder im Alltagsbrowser installiert.**
+**Veröffentlicht am 2026-11-01:** Code-Commit `ec98747` auf `main`, Greasy-Fork-Admin-Sync
+erfolgreich, öffentliche Seite und Update-`meta.js` melden `2.0.3`, GitHub-Release `v2.0.3`
+zeigt auf `ec98747`. **Im Alltagsbrowser noch manuell zu importieren** über
+`!Ausgabe\xdsh-costs-v2.0.3.user.js`.
 
-**Veröffentlichter Stand v2.0.2** — der Tooltip zeigt die installierte Skriptversion (`GM_info`).
-Echte TM-Injektion + echte API und End-to-End mit echtem Konto wurden für diesen Stand verifiziert
-(`💳 $17.35 · heute $1.59`). In Tampermonkey des Automatisierungsprofils installiert.
-**Auf Greasy Fork veröffentlicht** (GF-ID 595732, Locale `de`; **Pilotlauf des Syncs am
-2026-09-14 mit v2.0.2 bestanden** — Details:
-[`memory/SESSION-20260914-greasy-fork-veroeffentlichung.md`](memory/SESSION-20260914-greasy-fork-veroeffentlichung.md),
-Abschnitte 9–10). GitHub-Release `v2.0.2` angelegt.
+**Browserprofil-Regel (verbindlich):** Greasy-Fork-Arbeiten laufen ausschließlich im separaten
+Chrome-for-Testing-Profil aus `playwright-mcp-config.json`, niemals im Alltags-/Yandex-Browser.
+Cookies, Cookie-Datenbank, Sessions und das Profil dieses Skill-Browsers **nie löschen**; nach
+der Arbeit das Fenster normal schließen, damit der Greasy-Fork-Login erhalten bleibt.
 **Im Alltagsbrowser des Nutzers installiert und im Betrieb bestätigt** (2026-09-14: Nutzer hat die
 neue Tooltip-Zeile `xDSH Costs v2.0.x` im laufenden Badge gesehen) — die frühere Angabe „dort noch
 offen" war veraltet.

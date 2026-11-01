@@ -99,7 +99,7 @@ Aus dem Repo bzw. aus `!Ausgabe/`:
 ## Greasy Fork (Veröffentlichung)
 
 Veröffentlicht seit 2026-09-14: <https://greasyfork.org/de/scripts/595732-xdsh-costs-dsh>
-(GF-ID 595732, Lizenz MIT, Skript-Locale `de`).
+(GF-ID 595732, Lizenz MIT, Skript-Locale `de`; aktueller Stand **v2.0.3** vom 2026-11-01).
 
 - **Auto-Sync ist eingerichtet** (Skript aus `main/xdsh-costs.user.js`, Zusatzinfos aus
   `main/description.md`). Ein manueller Upload ist nicht nötig — der Repo-Webhook zog im

@@ -1,4 +1,4 @@
-# SESSION 2026-11-01 — Peak-Flamme (lokaler Kandidat v2.0.3)
+# SESSION 2026-11-01 — Peak-Flamme und Release v2.0.3
 
 ## 1. Auftrag und Darstellung
 
@@ -53,10 +53,32 @@ Das frühere Verzeichnis `C:\Users\lolo\.dsh\browser-tools` enthielt beim Lauf k
 Fallback auf die mit Codex ausgelieferte Playwright-Installation und die normale lokale
 Chrome-Datei; `DSB_CHROME` kann den Pfad weiterhin explizit setzen.
 
-## 5. Offene Zustände
+## 5. Veröffentlichung und Belege
 
-- v2.0.3 ist lokal gebaut und getestet, aber **nicht** committed, gepusht, auf Greasy Fork
-  synchronisiert, als GitHub-Release angelegt oder in Tampermonkey installiert.
-- Für eine Veröffentlichung gilt unverändert die komplette Kette aus `AGENTS.md`, einschließlich
-  Secret-Prüfung, Verteilkopie/Hash, Push, GF-Admin-Trigger, GF-Verifikation und GitHub-Release.
-- Der Nutzer erhält Updates weiterhin per manuellem Import der Verteilkopie.
+| Schritt | Ergebnis |
+|---|---|
+| Secret-Prüfung | Arbeitsstand und gesamte Git-Historie ohne Treffer |
+| Code-Commit + Push | `ec98747e2568f3a4c78170d38296b35296ec73f4`, lokal = `origin/main` |
+| GitHub-Rohdatei | `@version 2.0.3`, 37.374 Bytes, kein Secret-Muster |
+| GF-Admin-Felder | eingeloggt; Skript-URL korrekt; `automatic`; Zusatzinfos-URL korrekt; `markdown` |
+| GF-Admin-Trigger | „Jetzt aktualisieren und synchronisieren" erfolgreich |
+| Öffentliche GF-Seite | `2.0.3`, aktualisiert 01.11.2026, 36,5 KB, Peak-Hinweis sichtbar |
+| GF-Versionsseite | `2.0.3` vorhanden |
+| GF-Updatequelle | `.meta.js` meldet `@version 2.0.3` |
+| GitHub-Release | `v2.0.3`, Ziel `ec98747`, veröffentlicht 2026-11-01 05:28 MEZ |
+
+Der Nutzer erhält das Update weiterhin per **manuellem Import** von
+`!Ausgabe\xdsh-costs-v2.0.3.user.js`; im Alltagsbrowser ist die Installation noch offen.
+
+## 6. Browser-/Cloudflare-Lehren und Cookie-Erhalt
+
+- Ausschließlich das separate Chrome-for-Testing-Profil aus
+  `C:\Users\lolo\.dsh\playwright-mcp-config.json` verwenden — **niemals** den Yandex-/Alltagsbrowser.
+- Der Nutzer hat sich am 2026-11-01 im separaten Profil bei Greasy Fork angemeldet.
+  **Cookies, Cookie-Datenbank, Sessions und Profildaten dieses Browsers niemals löschen.** Fenster
+  nach der Arbeit normal schließen; der Login muss für kommende Releases erhalten bleiben.
+- Der automatisierte Login-Aufruf geriet in eine Cloudflare-Prüfschleife. Der einmalige Login
+  funktionierte im selben separaten Profil bei direktem Start ohne Automationskennzeichen.
+  Danach konnte Playwright das persistierte Login für Admin-Prüfung und Sync verwenden.
+- Wiederholte schnelle Sprachsuchseiten können Cloudflare erneut auslösen. Nach hinreichendem
+  Beweis (öffentliche Seite, Versionsseite, `meta.js`) keine Prüfschleifen fortsetzen.
