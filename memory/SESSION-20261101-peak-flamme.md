@@ -82,3 +82,6 @@ Der Nutzer erhält das Update weiterhin per **manuellem Import** von
   Danach konnte Playwright das persistierte Login für Admin-Prüfung und Sync verwenden.
 - Wiederholte schnelle Sprachsuchseiten können Cloudflare erneut auslösen. Nach hinreichendem
   Beweis (öffentliche Seite, Versionsseite, `meta.js`) keine Prüfschleifen fortsetzen.
+- Abschlusskontrolle: 0 Prozesse des separaten Profils; Cookie-Datenbank vorhanden (196.608
+  Bytes) und beim Bereinigen der reinen Exit-Markierung hash-unverändert; `profile.exit_type`
+  steht wieder auf `Normal`.
