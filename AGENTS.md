@@ -15,14 +15,15 @@ als schwebendes Badge im DSH-Web-GUI.
 | [`memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md`](memory/ANALYSE-20260910-deepseek-platform-dashboard-endpunkte.md) | Endpunkte, **Auth-Beweis (Token ja / Cookies nein)**, Token-Herkunft, Antwortformen, DOM-Falle, WAF, Codeanker |
 | [`memory/TESTEN-userscript-xdsh-costs.md`](memory/TESTEN-userscript-xdsh-costs.md) | Testrezept in 6 Stufen mit Befehlen und erwarteten Checks |
 | [`memory/SESSION-20260914-greasy-fork-veroeffentlichung.md`](memory/SESSION-20260914-greasy-fork-veroeffentlichung.md) | **Greasy-Fork-Veröffentlichung (v2.0.1/v2.0.2, GF-ID 595732):** Auftrag, Secret-Prüfung, Sync-Einrichtung, Belege, Fehler/Lehren; Abschnitt 10: **Pilotlauf des Syncs mit v2.0.2** |
+| [`memory/SESSION-20261101-peak-flamme.md`](memory/SESSION-20261101-peak-flamme.md) | **v2.0.3 lokal:** Peak-Flamme ohne Größenänderung, UTC-/Feiertagslogik, Tests und offene Veröffentlichung |
 
 ## Installation in Tampermonkey (wichtig nach Umbenennungen)
 
 Das Skript hat **zwei Identitäten**, die Tampermonkey unterscheidet: der `@name` bestimmt, ob ein
 Import ein **Update** oder ein **neues Skript** ist.
 
-- Aktueller Stand: `@name` **xDSH Costs (DSH)**, Datei `xdsh-costs.user.js`, v2.0.2
-  (auf Greasy Fork veröffentlicht, GF-ID 595732).
+- Lokaler Stand: `@name` **xDSH Costs (DSH)**, Datei `xdsh-costs.user.js`, **v2.0.3**.
+  Veröffentlichter Stand auf Greasy Fork/GitHub bleibt bis zum Release **v2.0.2** (GF-ID 595732).
 - **Jede Änderung des `@name` ist für Tampermonkey ein neues Skript.** Dann gilt: neues Skript
   importieren **und den alten Eintrag löschen**, sonst laufen beide parallel.
 - Die **GM-Speicher-Schlüssel `xdsb.token` / `xdsb.tokenAt` / `xdsb.snapshot` / `xdsb.pos` sind
@@ -165,9 +166,16 @@ geleert wird — sonst zählen die Anfragen des ersten Seitenaufbaus mit.
 
 ## Stand
 
-**v2.0.2** — GF-Metadaten plus neu: der **Tooltip zeigt die installierte Skriptversion**
-(`GM_info`). **Vollständig verifiziert**: Parser-Tests 16/16, Badge-Verhalten 4/4 (echtes
-Chromium), echte TM-Injektion + echte API, **End-to-End mit echtem Konto**
+**Lokaler Kandidat v2.0.3** — während der DeepSeek-Peak-Zeit erscheint rechts im vorhandenen
+Badge eine kleine Flamme, ohne Text-, Breiten- oder Höhenänderung. Peak wird rein lokal aus der
+Systemzeit als UTC bestimmt (Mo–Fr 01:00–04:00 und 06:00–10:00 UTC; Wochenenden und chinesische
+Feiertage Off-Peak). Amtlicher Feiertagsplan 2026 plus gesetzlicher Rückfall für spätere Jahre.
+Verifiziert: Syntax Exit 0, Parser-/Zeitregeln **19/19** (inkl. UTC+1/UTC+2), Badge-Verhalten **4/4** im echten
+Chromium; gemessene Badge-Größe mit/ohne Flamme identisch (`202.3125 × 30.796875 px`).
+**Noch nicht veröffentlicht, gepusht oder im Alltagsbrowser installiert.**
+
+**Veröffentlichter Stand v2.0.2** — der Tooltip zeigt die installierte Skriptversion (`GM_info`).
+Echte TM-Injektion + echte API und End-to-End mit echtem Konto wurden für diesen Stand verifiziert
 (`💳 $17.35 · heute $1.59`). In Tampermonkey des Automatisierungsprofils installiert.
 **Auf Greasy Fork veröffentlicht** (GF-ID 595732, Locale `de`; **Pilotlauf des Syncs am
 2026-09-14 mit v2.0.2 bestanden** — Details:

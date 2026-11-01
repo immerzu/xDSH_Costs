@@ -34,11 +34,14 @@ Erwartung: keine Zeile. `verify-badge.mjs` (Wegwerf-Profil) ist davon nicht betr
 node test/parse.test.mjs
 ```
 
-Erwartung: `16 bestanden, 0 fehlgeschlagen`, Exit 0.
+Erwartung: `19 bestanden, 0 fehlgeschlagen`, Exit 0.
 
 Prüft die Funktionen aus der `PURE`-Region: Zahl-/Token-Parsing, Topped-up-Summen,
 Tages-/Monatskosten (inkl. Monatsfilter und `REQUEST`-Ausnahme), Formatierung, Zeitangaben,
-Fehlerklassifikation (Auth vs. WAF vs. HTTP).
+Fehlerklassifikation (Auth vs. WAF vs. HTTP) sowie die UTC-Grenzen, Wochenenden und chinesischen
+Feiertage der Peak-/Off-Peak-Regel.
+Die Zeitregeln enthalten außerdem explizite Gegenproben für deutsche Winterzeit (`UTC+1`) und
+Sommerzeit (`UTC+2`); beide müssen auf dieselben UTC-Fenster abbilden.
 
 **Bei Änderungen an den Parsern:** Fälle in `test/parse.test.mjs` ergänzen, nie Logik duplizieren.
 
@@ -50,11 +53,12 @@ Fehlerklassifikation (Auth vs. WAF vs. HTTP).
 node tools/verify-badge.mjs
 ```
 
-Erwartung: `4/4 Fälle grün`, Exit 0, plus Screenshot `out/badge-happy-path.png`.
+Erwartung: `4/4 Fälle grün`, Exit 0, plus Screenshots `out/badge-happy-path.png`,
+`out/badge-peak-layout.png` und `out/badge-peak-layout-crop.png`.
 
 | Fall | Erwarteter Badge-Text | Zusätzlich geprüft |
 |---|---|---|
-| `happy-path` | `💳 $17.48 · heute $1.45` | Anfrage trägt **Bearer-Header und** Cookie |
+| `happy-path` | `💳 $17.48 · heute $1.45` | Anfrage trägt **Bearer-Header und** Cookie; Flamme ist absolut positioniert und verändert Breite/Höhe nicht |
 | `ohne-token-keine-anfrage` | `💳 nicht angemeldet` | **keine** Anfrage verlässt die Seite |
 | `login-noetig` | `💳 Login nötig — platform.deepseek.com` | 401/40003 → Auth-Zustand |
 | `letzter-stand-bei-fehler` | `💳 $17.48 · heute $1.45 ⏳` | Fehler mit Fallback auf letzten Stand |
@@ -62,6 +66,10 @@ Erwartung: `4/4 Fälle grün`, Exit 0, plus Screenshot `out/badge-happy-path.png
 Der Test startet einen lokalen Server auf **Port 8799** (DSH-ähnliche Seite mit
 `window.__DSH_BOOT__`) und mockt `https://platform.deepseek.com/**` per Playwright-Routing —
 inklusive CORS-Preflight.
+
+Falls `C:\Users\lolo\.dsh\browser-tools` nicht mehr vorhanden ist, sucht das Werkzeug zusätzlich
+die mit Codex ausgelieferte `playwright-core`-Installation und die normale lokale Chrome-Datei.
+Alternativ kann der Chrome-Pfad über `DSB_CHROME` gesetzt werden.
 
 ---
 

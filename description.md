@@ -6,6 +6,7 @@ Zeigt **Topped-up-Balance** und **Tageskosten** des DeepSeek-API-Kontos als schw
 - **Datenschutz:** kein Server, kein Tracking, keine Datenübertragung außer an `platform.deepseek.com`.
 - Bedienung: Klick öffnet die Usage-Seite, Ziehen verschiebt das Badge (Position wird gemerkt), Tooltip zeigt Guthaben, Gratisguthaben, Monatskosten und Aktualisierungszeit.
 - Aktualisierung: alle 5 Minuten, zusätzlich beim Tab-Fokus; ohne frischen Wert markiert ⏳ nach 30 Minuten den letzten Stand.
+- Während der DeepSeek-Peak-Zeit erscheint rechts im unverändert großen Badge eine kleine Flamme (`🔥`); außerhalb der Peak-Zeit bleibt sie verborgen.
 
 Die Dashboard-Endpunkte sind privat und können sich ändern — dann zeigt das Badge einen Fehlerzustand statt Zahlen. MIT-Lizenz.
 
@@ -17,6 +18,7 @@ Die Dashboard-Endpunkte sind privat und können sich ändern — dann zeigt das 
 - **Конфиденциальность:** никакого сервера, никакого трекинга, передача данных только на `platform.deepseek.com`.
 - Управление: клик открывает страницу Usage, перетаскивание перемещает бейдж (позиция запоминается), подсказка показывает баланс, бонусный баланс, расходы за месяц и время обновления.
 - Обновление: каждые 5 минут и дополнительно при фокусе вкладки; если свежих данных нет 30 минут, ⏳ помечает последнее значение.
+- В часы пик DeepSeek справа в бейдже без изменения его размера появляется маленькое пламя (`🔥`); вне часов пик оно скрыто.
 
 Эндпоинты дашборда приватные и могут измениться — тогда бейдж показывает состояние ошибки вместо цифр. Лицензия MIT.
 
@@ -28,5 +30,6 @@ Shows the **topped-up balance** and **today's cost** of the DeepSeek API account
 - **Privacy:** no server, no tracking, no data transfer other than to `platform.deepseek.com`.
 - Usage: click opens the usage page, drag moves the badge (position is remembered), the tooltip shows balance, free credit, monthly cost and the last update time.
 - Refresh: every 5 minutes and additionally on tab focus; without a fresh value ⏳ marks the last known state after 30 minutes.
+- During DeepSeek peak hours, a small flame (`🔥`) appears on the right without changing the badge size; it stays hidden off peak.
 
 The dashboard endpoints are private and may change — in that case the badge shows an error state instead of numbers. MIT license.

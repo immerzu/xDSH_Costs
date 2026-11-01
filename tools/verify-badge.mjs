@@ -14,10 +14,51 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
 
-const requireFromTools = createRequire('C:\\Users\\lolo\\.dsh\\browser-tools\\package.json');
-const { chromium } = requireFromTools('playwright-core');
 const LIB = 'C:\\Users\\lolo\\.dsh\\browser-tools\\lib.mjs';
-const { CHROME } = await import(pathToFileURL(LIB).href);
+
+function playwrightCandidates() {
+  const candidates = ['C:\\Users\\lolo\\.dsh\\browser-tools\\package.json'];
+  const runtimeRoot = path.join(process.env.LOCALAPPDATA || '', 'OpenAI', 'Codex', 'runtimes', 'cua_node');
+  if (fs.existsSync(runtimeRoot)) {
+    for (const entry of fs.readdirSync(runtimeRoot, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      candidates.push(path.join(runtimeRoot, entry.name, 'bin', 'node_modules', 'playwright-core', 'package.json'));
+    }
+  }
+  return candidates;
+}
+
+function loadPlaywright() {
+  const errors = [];
+  for (const candidate of playwrightCandidates()) {
+    if (!fs.existsSync(candidate)) continue;
+    try {
+      return createRequire(candidate)('playwright-core');
+    } catch (e) {
+      errors.push(`${candidate}: ${e.message}`);
+    }
+  }
+  throw new Error('playwright-core nicht gefunden' + (errors.length ? `\n${errors.join('\n')}` : ''));
+}
+
+async function chromePath() {
+  if (fs.existsSync(LIB)) {
+    const { CHROME } = await import(pathToFileURL(LIB).href);
+    if (CHROME && fs.existsSync(CHROME)) return CHROME;
+  }
+  const candidates = [
+    process.env.DSB_CHROME,
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+    path.join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+  ].filter(Boolean);
+  const found = candidates.find((candidate) => fs.existsSync(candidate));
+  if (!found) throw new Error('Chrome nicht gefunden (optional DSB_CHROME setzen)');
+  return found;
+}
+
+const { chromium } = loadPlaywright();
+const CHROME = await chromePath();
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const scriptPath = path.join(here, '..', 'xdsh-costs.user.js');
@@ -237,11 +278,56 @@ for (const sc of scenarios) {
     .getAttribute('#xdsh-costs-badge [data-role="dot"]', 'style')
     .catch(() => '');
 
+  // Die Flamme liegt absolut im vorhandenen rechten Innenabstand. Sichtbar oder
+  // verborgen darf sie deshalb weder Breite noch Höhe des Badges verändern.
+  let peakLayoutOk = true;
+  let peakLayoutNote = '';
+  if (sc.name === 'happy-path') {
+    const layout = await page.evaluate(() => {
+      const badge = document.querySelector('#xdsh-costs-badge');
+      const peak = badge && badge.querySelector('[data-role="peak"]');
+      if (!badge || !peak) return null;
+      peak.hidden = true;
+      const hidden = badge.getBoundingClientRect();
+      peak.hidden = false;
+      const visible = badge.getBoundingClientRect();
+      peak.hidden = true;
+      return {
+        text: peak.textContent,
+        position: getComputedStyle(peak).position,
+        hidden: { width: hidden.width, height: hidden.height },
+        visible: { width: visible.width, height: visible.height },
+      };
+    });
+    peakLayoutOk = !!layout && layout.text === '🔥' && layout.position === 'absolute'
+      && layout.hidden.width === layout.visible.width && layout.hidden.height === layout.visible.height;
+    peakLayoutNote = layout ? `${layout.hidden.width}x${layout.hidden.height}` : 'Flamme fehlt';
+  }
+
   if (sc.name === 'happy-path') {
     const shotPath = path.join(here, '..', 'out', 'badge-happy-path.png');
     fs.mkdirSync(path.dirname(shotPath), { recursive: true });
     await page.screenshot({ path: shotPath });
     console.log(`VERIFY:shot ${shotPath}`);
+
+    // Separater Layout-Beleg mit eingeblendeter Flamme, unabhängig davon, ob
+    // der Test gerade tatsächlich innerhalb eines Peak-Fensters läuft.
+    await page.evaluate(() => {
+      const peak = document.querySelector('#xdsh-costs-badge [data-role="peak"]');
+      if (peak) peak.hidden = false;
+    });
+    const peakShotPath = path.join(here, '..', 'out', 'badge-peak-layout.png');
+    await page.screenshot({ path: peakShotPath });
+    console.log(`VERIFY:shot ${peakShotPath}`);
+    const peakCropPath = path.join(here, '..', 'out', 'badge-peak-layout-crop.png');
+    const peakBox = await page.locator('#xdsh-costs-badge').boundingBox();
+    if (peakBox) {
+      await page.screenshot({
+        path: peakCropPath,
+        clip: { x: peakBox.x, y: peakBox.y, width: peakBox.width, height: peakBox.height },
+      });
+    }
+    console.log(`VERIFY:shot ${peakCropPath}`);
   }
 
   // Zusätzlich prüfen, WAS die Anfrage mitgeschickt hat (Cookie/Token) bzw. dass
@@ -276,10 +362,10 @@ for (const sc of scenarios) {
     }
   }
 
-  const ok = text.trim() === sc.expectText && title.includes(sc.expectInTitle) && headerOk;
+  const ok = text.trim() === sc.expectText && title.includes(sc.expectInTitle) && headerOk && peakLayoutOk;
   results.push({ name: sc.name, ok, text: text.trim(), title });
   console.log(
-    `VERIFY:${ok ? 'ok  ' : 'FAIL'} ${sc.name} → text="${text.trim()}" dot=${(dotColor || '-').slice(0, 60)} headers=${headerOk ? 'ok' : headerNote}`,
+    `VERIFY:${ok ? 'ok  ' : 'FAIL'} ${sc.name} → text="${text.trim()}" dot=${(dotColor || '-').slice(0, 60)} headers=${headerOk ? 'ok' : headerNote}${sc.name === 'happy-path' ? ` peak-layout=${peakLayoutOk ? 'gleich ' + peakLayoutNote : 'FEHLER'}` : ''}`,
   );
   if (!ok) {
     console.log(`VERIFY:     erwartet text="${sc.expectText}" + title~"${sc.expectInTitle}"`);

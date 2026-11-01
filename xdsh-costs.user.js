@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         xDSH Costs (DSH)
 // @namespace    https://github.com/immerzu
-// @version      2.0.2
+// @version      2.0.3
 // @description  Zeigt Topped-up-Balance und Tageskosten des DeepSeek-API-Kontos als schwebendes Badge im DSH-Web-GUI (127.0.0.1/localhost). Kein API-Key, keine Modellaufrufe — liest nur die Dashboard-Endpunkte der eigenen Platform-Web-Session.
 // @description:en  Shows the topped-up balance and today's cost of the DeepSeek API account as a floating badge in the DSH web GUI (127.0.0.1/localhost). No API key and no model calls — it only reads the dashboard endpoints of your own platform web session.
 // @description:ru  Показывает пополненный баланс и расходы за сегодня аккаунта DeepSeek API в виде плавающего бейджа в веб-интерфейсе DSH (127.0.0.1/localhost). Без API-ключа и вызовов моделей — читает только эндпоинты дашборда вашей веб-сессии на платформе.
@@ -133,6 +133,100 @@
         const d = date || new Date();
         const p = (n) => String(n).padStart(2, '0');
         return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+    }
+
+    /** "YYYY-MM-DD" des UTC-Tages. */
+    function utcDayIso(date) {
+        const d = date || new Date();
+        const p = (n) => String(n).padStart(2, '0');
+        return `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}`;
+    }
+
+    /*
+     * Offizielle chinesische Feiertagszeiträume, auf die DeepSeek in seiner
+     * Peak-/Off-Peak-Regel verweist. Der Jahresplan wird von Chinas Staatsrat
+     * veröffentlicht und muss nach Erscheinen eines neuen Plans ergänzt werden.
+     * Die Datumswerte werden als volle UTC-Tage behandelt, passend zur
+     * ausschließlich in UTC definierten DeepSeek-Preisregel.
+     */
+    const CHINA_HOLIDAY_RANGES = {
+        2026: [
+            ['2026-01-01', '2026-01-03'], // Neujahr
+            ['2026-02-15', '2026-02-23'], // Frühlingsfest
+            ['2026-04-04', '2026-04-06'], // Qingming
+            ['2026-05-01', '2026-05-05'], // Tag der Arbeit
+            ['2026-06-19', '2026-06-21'], // Drachenbootfest
+            ['2026-09-25', '2026-09-27'], // Mondfest
+            ['2026-10-01', '2026-10-07']  // Nationalfeiertag
+        ]
+    };
+
+    function chineseCalendarParts(dayIso) {
+        try {
+            // Mittags UTC liegt sicher innerhalb desselben Kalendertags in China.
+            const date = new Date(dayIso + 'T12:00:00Z');
+            const parts = new Intl.DateTimeFormat('en-u-ca-chinese', {
+                timeZone: 'Asia/Shanghai',
+                month: 'numeric',
+                day: 'numeric'
+            }).formatToParts(date);
+            const value = (type) => Number((parts.find((part) => part.type === type) || {}).value);
+            const month = value('month');
+            const day = value('day');
+            return Number.isFinite(month) && Number.isFinite(day) ? { month, day } : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /** Gesetzlicher Feiertagskern als Rückfall für Jahre ohne veröffentlichten Jahresplan. */
+    function isStatutoryChineseHoliday(dayIso) {
+        const monthDay = String(dayIso || '').slice(5);
+        if (['01-01', '05-01', '05-02', '10-01', '10-02', '10-03'].includes(monthDay)) return true;
+
+        const year = Number(String(dayIso || '').slice(0, 4));
+        if (Number.isFinite(year) && monthDay.startsWith('04-')) {
+            // Qingming-Formel für 2000–2099; einzelne historische Ausnahmen sind
+            // für den Einsatzzeitraum dieses Skripts nicht relevant.
+            const yy = year % 100;
+            const qingmingDay = Math.floor(yy * 0.2422 + 4.81) - Math.floor(yy / 4);
+            if (Number(monthDay.slice(3)) === qingmingDay) return true;
+        }
+
+        const lunar = chineseCalendarParts(dayIso);
+        if (lunar && (
+            (lunar.month === 1 && lunar.day >= 1 && lunar.day <= 3) ||
+            (lunar.month === 5 && lunar.day === 5) ||
+            (lunar.month === 8 && lunar.day === 15)
+        )) return true;
+
+        // Chinesischer Silvesterabend: Der Folgetag ist der 1. Tag des 1. Mondmonats.
+        const next = new Date(dayIso + 'T12:00:00Z');
+        if (!Number.isFinite(next.getTime())) return false;
+        next.setUTCDate(next.getUTCDate() + 1);
+        const nextLunar = chineseCalendarParts(utcDayIso(next));
+        return !!(nextLunar && nextLunar.month === 1 && nextLunar.day === 1);
+    }
+
+    function isChinesePublicHolidayUtc(date) {
+        const day = utcDayIso(date);
+        const year = String(day).slice(0, 4);
+        const ranges = CHINA_HOLIDAY_RANGES[year];
+        if (Array.isArray(ranges) && ranges.some(([from, to]) => day >= from && day <= to)) return true;
+        return isStatutoryChineseHoliday(day);
+    }
+
+    /**
+     * DeepSeek-Peak-Zeit: Mo–Fr 01:00–04:00 und 06:00–10:00 UTC,
+     * ausgenommen chinesische Feiertage. Start inklusive, Ende exklusive.
+     */
+    function isPeakTime(date) {
+        const d = date || new Date();
+        if (!Number.isFinite(d.getTime())) return false;
+        const weekday = d.getUTCDay();
+        if (weekday === 0 || weekday === 6 || isChinesePublicHolidayUtc(d)) return false;
+        const hour = d.getUTCHours();
+        return (hour >= 1 && hour < 4) || (hour >= 6 && hour < 10);
     }
 
     const CURRENCY_SYMBOL = { USD: '$', CNY: '¥', EUR: '€' };
@@ -430,7 +524,7 @@
             'display:flex',
             'align-items:center',
             'gap:8px',
-            'padding:6px 12px',
+            'padding:6px 16px 6px 8px',
             'border-radius:10px',
             'border:1px solid rgba(255,255,255,0.08)',
             'background:rgba(13,13,13,0.82)',
@@ -451,9 +545,24 @@
         const text = document.createElement('span');
         text.dataset.role = 'text';
         text.textContent = '💳 …';
+        const peak = document.createElement('span');
+        peak.dataset.role = 'peak';
+        peak.textContent = '🔥';
+        peak.hidden = true;
+        peak.setAttribute('aria-label', 'Peak-Zeit');
+        peak.style.cssText = [
+            'position:absolute',
+            'right:1px',
+            'top:calc(50% - 1px)',
+            'transform:translateY(-58%)',
+            'font-size:11px',
+            'line-height:1',
+            'pointer-events:none'
+        ].join(';');
 
         badgeEl.appendChild(dot);
         badgeEl.appendChild(text);
+        badgeEl.appendChild(peak);
         document.body.appendChild(badgeEl);
 
         applySavedPosition();
@@ -472,8 +581,20 @@
             dot.style.boxShadow = view.kind === 'ok' ? '0 0 6px rgba(61,220,132,0.6)' : 'none';
         }
         if (text) text.textContent = view.text;
-        el.title = view.title;
+        el.dataset.baseTitle = view.title;
         el.style.opacity = view.kind === 'ok' ? '0.94' : '0.8';
+        updatePeakIndicator();
+    }
+
+    function updatePeakIndicator() {
+        const el = ensureBadge();
+        if (!el) return;
+        const peak = el.querySelector('[data-role="peak"]');
+        const active = isPeakTime(new Date());
+        if (peak) peak.hidden = !active;
+        el.dataset.peak = active ? '1' : '0';
+        const baseTitle = el.dataset.baseTitle || el.title || '';
+        el.title = baseTitle + (active ? '\n\n🔥 Peak-Zeit: regulärer Tarif' : '');
     }
 
     /** Baut aus einem Ergebnis den Anzeigezustand (Text + Tooltip). */
@@ -676,8 +797,13 @@
         else window.addEventListener('DOMContentLoaded', () => setTimeout(boot, 800));
 
         setInterval(() => refresh(false), CFG.REFRESH_MS);
+        // Reine Zeitanzeige ohne API-Aufruf; hält die Flamme an den UTC-Grenzen aktuell.
+        setInterval(updatePeakIndicator, 30 * 1000);
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) refresh(false);
+            if (!document.hidden) {
+                updatePeakIndicator();
+                refresh(false);
+            }
         });
 
         // Von der Platform-Seite gepushte Werte sofort übernehmen.

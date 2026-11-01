@@ -8,6 +8,10 @@ arbeitet.
 💳 $17.48 · heute $1.45
 ```
 
+Während der DeepSeek-Peak-Zeit erscheint rechts im bestehenden Badge eine kleine Flamme:
+`💳 $17.48 · heute $1.45 🔥`. Sie liegt im vorhandenen Innenabstand und verändert die
+Badge-Abmessungen nicht. Außerhalb der Peak-Zeit wird sie vollständig ausgeblendet.
+
 ## Wie es funktioniert
 
 Ein Skript, zwei Rollen (über `@match` gesteuert):
@@ -46,6 +50,7 @@ Aufrufe, die die Platform-Seite selbst beim Öffnen macht.
 | DSH-Tab bekommt Fokus | sofort, aber frühestens **60 s** nach dem letzten Versuch |
 | Platform-Seite zusätzlich geöffnet | alle **60 s**, und jeder neue Wert wird **sofort** ins Badge geschoben |
 | Ohne frischen Wert | nach **30 Minuten** markiert das Badge den Stand mit ⏳ |
+| Peak-Anzeige | alle **30 Sekunden**, rein lokal und ohne zusätzlichen API-Aufruf |
 
 Die Intervalle stehen als Konstanten oben im Skript (`CFG.REFRESH_MS`,
 `CFG.PLATFORM_REFRESH_MS`, `CFG.MIN_REFRESH_MS`, `CFG.STALE_MS`).
@@ -59,6 +64,10 @@ Die Intervalle stehen als Konstanten oben im Skript (`CFG.REFRESH_MS`,
 | ⚪ `💳 nicht angemeldet` | vor dem ersten Abruf |
 | 🔴 `💳 Login nötig — platform.deepseek.com` | Cookies/Token ungültig → im Browser bei platform.deepseek.com anmelden |
 | 🔴 `💳 HTTP … / WAF blockiert` | Endpunkt antwortet nicht wie erwartet |
+
+`🔥` bedeutet Peak-Zeit: Montag bis Freitag, 01:00–04:00 und 06:00–10:00 UTC. Wochenenden
+und chinesische Feiertage sind vollständig Off-Peak. Geldbeträge, Statuspunkt und Badge-Größe
+bleiben dabei unverändert.
 
 Bedienung: **Klick** öffnet `platform.deepseek.com/usage`, **Ziehen** verschiebt das
 Badge (Position wird gemerkt), **Tooltip** zeigt Guthaben, Gratisguthaben,
@@ -112,7 +121,7 @@ Veröffentlicht seit 2026-09-14: <https://greasyfork.org/de/scripts/595732-xdsh-
 ## Entwicklung / Tests
 
 ```bash
-node test/parse.test.mjs        # 16 Parser-Tests (reine Funktionen aus dem Userscript)
+node test/parse.test.mjs        # 19 Parser-/Zeitregel-Tests (inkl. Sommer-/Winterzeit)
 node tools/verify-badge.mjs     # 4 Verhaltensfälle im echten Chromium (gemockte API)
 node tools/verify-dsh-tm.mjs    # echte TM-Injektion + echte API (ungültiger Token)
 node tools/verify-dsh-tm-live.mjs  # End-to-End mit echtem Konto (Platform-Login nötig)
@@ -178,5 +187,9 @@ und `node tools/live-parse.mjs` (wertet die echten Antworten mit den Skript-Pars
 - AWS-WAF: Auf der Platform-Seite kann eine „Human Verification" erscheinen. Sie ist
   einmalig im Browser zu lösen; das Badge selbst stellt keine Anfragen an die
   HTML-Seiten, sondern nur an die API-Endpunkte.
+- Chinesische Feiertagszeiträume werden jährlich durch den Staatsrat veröffentlicht. Der
+  amtliche Plan 2026 ist vollständig hinterlegt; für spätere, noch nicht hinterlegte Jahre
+  erkennt das Skript den gesetzlichen Feiertagskern als Rückfall. Nach Veröffentlichung eines
+  neuen Jahresplans sollte `CHINA_HOLIDAY_RANGES` ergänzt werden.
 
 MIT-Lizenz.

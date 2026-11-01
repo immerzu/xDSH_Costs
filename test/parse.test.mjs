@@ -27,6 +27,7 @@ if (!match) {
 const PURE = new Function(
   `${match[1]}
    return { num, parseToken, localDayIso, symbolFor, fmtMoney,
+            utcDayIso, isChinesePublicHolidayUtc, isPeakTime,
             toppedUpFromSummary, dailyCostFromUsage, relTime, classifyFailure };`,
 )();
 
@@ -232,6 +233,33 @@ check('fmtMoney/symbolFor', () => {
 check('localDayIso: lokaler Tag, nullgepolstert', () => {
   eq(PURE.localDayIso(new Date(2026, 8, 10, 14, 15)), '2026-09-10');
   eq(PURE.localDayIso(new Date(2026, 0, 5, 1, 0)), '2026-01-05');
+});
+
+check('isPeakTime: UTC-Grenzen sind start-inklusiv und ende-exklusiv', () => {
+  eq(PURE.isPeakTime(new Date('2026-09-08T00:59:59Z')), false, 'vor erstem Fenster');
+  eq(PURE.isPeakTime(new Date('2026-09-08T01:00:00Z')), true, 'erstes Fenster beginnt');
+  eq(PURE.isPeakTime(new Date('2026-09-08T03:59:59Z')), true, 'erstes Fenster läuft');
+  eq(PURE.isPeakTime(new Date('2026-09-08T04:00:00Z')), false, 'erstes Fenster endet');
+  eq(PURE.isPeakTime(new Date('2026-09-08T06:00:00Z')), true, 'zweites Fenster beginnt');
+  eq(PURE.isPeakTime(new Date('2026-09-08T09:59:59Z')), true, 'zweites Fenster läuft');
+  eq(PURE.isPeakTime(new Date('2026-09-08T10:00:00Z')), false, 'zweites Fenster endet');
+});
+
+check('isPeakTime: Wochenende und chinesische Feiertage bleiben Off-Peak', () => {
+  eq(PURE.isPeakTime(new Date('2026-09-12T02:00:00Z')), false, 'Samstag');
+  eq(PURE.isPeakTime(new Date('2026-09-13T07:00:00Z')), false, 'Sonntag');
+  eq(PURE.isChinesePublicHolidayUtc(new Date('2026-10-05T02:00:00Z')), true, 'Nationalfeiertags-Zeitraum');
+  eq(PURE.isPeakTime(new Date('2026-10-05T02:00:00Z')), false, 'Feiertag am Montag');
+  eq(PURE.isPeakTime(new Date('2026-10-12T02:00:00Z')), true, 'normaler Montag');
+});
+
+check('isPeakTime: Rechnerzeit wird in Winter- und Sommerzeit korrekt nach UTC umgerechnet', () => {
+  // Derselbe UTC-Beginn 01:00 erscheint in Deutschland im Winter um 02:00 (UTC+1)
+  // und im Sommer um 03:00 (UTC+2). Date/GetUTC* übernimmt beide Umstellungen.
+  eq(PURE.isPeakTime(new Date('2026-01-13T02:00:00+01:00')), true, 'Winterzeit: 02:00 CET = 01:00 UTC');
+  eq(PURE.isPeakTime(new Date('2026-01-13T05:00:00+01:00')), false, 'Winterzeit: 05:00 CET = 04:00 UTC');
+  eq(PURE.isPeakTime(new Date('2026-07-14T03:00:00+02:00')), true, 'Sommerzeit: 03:00 CEST = 01:00 UTC');
+  eq(PURE.isPeakTime(new Date('2026-07-14T06:00:00+02:00')), false, 'Sommerzeit: 06:00 CEST = 04:00 UTC');
 });
 
 check('relTime', () => {

@@ -2,6 +2,20 @@
 
 Alle nennenswerten Änderungen an diesem Userscript.
 
+## 2.0.3 — 2026-11-01
+
+- Während der DeepSeek-Peak-Zeit erscheint rechts im Badge eine kleine Flamme (`🔥`). Außerhalb
+  der Peak-Zeit bleibt sie vollständig verborgen; Text, Geldbeträge und Zustandsfarben bleiben
+  unverändert.
+- Die Flamme ist absolut im vorhandenen rechten Innenabstand positioniert und verändert daher
+  weder Breite noch Höhe des Badges.
+- Peak-Regel: Montag bis Freitag, 01:00–04:00 und 06:00–10:00 UTC, ausgenommen Wochenenden und
+  chinesische Feiertage. Der amtliche Feiertagsplan 2026 ist hinterlegt; für spätere Jahre
+  dient der gesetzliche Feiertagskern als Rückfall, bis der jeweilige Jahresplan ergänzt wird.
+- Explizit getestet: Die Rechnerzeit wird sowohl in deutscher Winterzeit (`UTC+1`) als auch
+  Sommerzeit (`UTC+2`) korrekt in die UTC-Preisfenster umgerechnet.
+- Die Zeitanzeige aktualisiert sich alle 30 Sekunden ohne zusätzlichen API-Aufruf.
+
 ## 2.0.2 — 2026-09-14
 
 Kleine echte Verbesserung — und zugleich der **Pilotlauf** für den Greasy-Fork-Auto-Sync.
