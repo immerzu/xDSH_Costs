@@ -17,7 +17,7 @@ html, body {
    Kein Canvas, kein HTML-Text -> keine ClearType-Farbsaeume. */
 
 var TOKEN_REL = "\\.config\\opencode\\secrets\\deepseek-platform-token";
-var REFRESH_MS = 5 * 60 * 1000;
+var REFRESH_MS = 60 * 1000;
 var busy = false;
 
 var bg = null, txtBal = null, txtCost = null, txtLed = null, imgPeak = null;
@@ -275,6 +275,7 @@ function refresh() {
     if (c && c.status === 200) { try { cj = parseJson(c.body); } catch (e) {} }
     var d = dayCost(cj, dayIso(now));
     show("ok", money(w.total), "\u00b7 heute " + money(d ? d.today : null));
+    log("refresh ok  total=" + money(w.total) + "  heute=" + money(d ? d.today : null));
   } catch (e) {
     log("refresh: " + e.message);
     show("error", "Fehler", "");
@@ -292,6 +293,11 @@ function openUsage() {
   try { System.Shell.execute("https://platform.deepseek.com/usage"); } catch (e) {}
 }
 
+function clickRefresh() {
+  try { refresh(); } catch (e) {}
+  openUsage();
+}
+
 function init() {
   bg = document.getElementById("bg");
   log("init: bg=" + (bg ? "ja" : "nein") + " addImageObject=" + (bg && typeof bg.addImageObject) + " removeObject=" + (bg && typeof bg.removeObject));
@@ -303,8 +309,9 @@ function init() {
 }
 </script>
 </head>
-<body onload="init()" onclick="openUsage()"><g:background id="bg" src="src/background.png"></g:background></body>
+<body onload="init()" onclick="clickRefresh()"><g:background id="bg" src="src/background.png"></g:background></body>
 </html>
+
 
 
 
