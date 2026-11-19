@@ -184,7 +184,7 @@ function show(kind, balance, cost) {
     if (!bg) bg = document.getElementById("bg");
     if (!bg) return;
     if (!txtBal) txtBal = bg.addTextObject("", "Tahoma", 13, "White", 12, 17);
-    if (!txtCost) txtCost = bg.addTextObject("", "Segoe UI Semibold", 9, "White", 58, 20);
+    if (!txtCost) txtCost = bg.addTextObject("", "Segoe UI Semibold", 10, "White", 56, 19);
     if (!txtLed) txtLed = bg.addTextObject("\u25CF", "Tahoma", 10, "LimeGreen", 4, 18);
     try { txtBal.value = balance; } catch (e) { log("bal ERR " + e.message); }
     try { txtCost.value = cost; } catch (e) { log("cost ERR " + e.message); }
@@ -239,7 +239,7 @@ function init() {
   bg = document.getElementById("bg");
   log("init: bg=" + (bg ? "ja" : "nein") + " addImageObject=" + (bg && typeof bg.addImageObject) + " removeObject=" + (bg && typeof bg.removeObject));
   txtBal = bg.addTextObject("", "Tahoma", 13, "White", 12, 17);
-  txtCost = bg.addTextObject("", "Segoe UI Semibold", 9, "White", 58, 20);
+  txtCost = bg.addTextObject("", "Segoe UI Semibold", 10, "White", 56, 19);
   show("ok", "...", "");
   refresh();
   setInterval(refresh, REFRESH_MS);
@@ -248,6 +248,7 @@ function init() {
 </head>
 <body onload="init()" onclick="openUsage()"><g:background id="bg" src="src/background.png"></g:background></body>
 </html>
+
 
 
 
