@@ -1,0 +1,272 @@
+<html>
+<head>
+<title>DeepSeek Costs</title>
+<style type="text/css">
+body {
+  margin: 0;
+  margin-bottom: 0;
+  width: 130px;
+  height: 38px;
+  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  cursor: pointer;
+}
+#led {
+  position: absolute;
+  left: 6px;
+  top: 12px;
+  color: #3ddc84;
+  font-size: 9px;
+  line-height: 14px;
+}
+#card {
+  position: absolute;
+  left: 17px;
+  top: 13px;
+  width: 14px;
+  height: 9px;
+}
+#bal {
+  position: absolute;
+  left: 34px;
+  top: 9px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 17px;
+  white-space: nowrap;
+}
+#cost {
+  position: absolute;
+  left: 76px;
+  top: 13px;
+  color: #b0b0b0;
+  font-size: 7px;
+  line-height: 12px;
+  white-space: nowrap;
+}
+#peak {
+  position: absolute;
+  right: 1px;
+  top: 9px;
+  width: 11px;
+  height: 14px;
+  display: block;
+}
+</style>
+<script type="text/javascript">
+/* ES3 — die Gadget-Engine ist alt. Kein let/const, keine Pfeilfunktionen. */
+
+var TOKEN_REL = "\\.config\\opencode\\secrets\\deepseek-platform-token";
+var REFRESH_MS = 5 * 60 * 1000;
+var busy = false;
+
+function el(id) { return document.getElementById(id); }
+
+function fso() {
+  try { return new ActiveXObject("Scripting.FileSystemObject"); } catch (e) { return null; }
+}
+
+function homeDir() {
+  try { return System.Environment.getEnvironmentVariable("USERPROFILE"); } catch (e) {}
+  try { return new ActiveXObject("WScript.Shell").ExpandEnvironmentStrings("%USERPROFILE%"); } catch (e) {}
+  return "";
+}
+
+function readToken() {
+  var f = fso();
+  if (!f) return null;
+  var path = homeDir() + TOKEN_REL;
+  try {
+    if (!f.FileExists(path)) return null;
+    var s = f.OpenTextFile(path, 1, false);
+    var text = s.ReadAll();
+    s.Close();
+    var lines = text.split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++) {
+      var line = trim(lines[i]);
+      if (line && line.charAt(0) !== "#") return parseToken(line);
+    }
+  } catch (e) {}
+  return null;
+}
+
+function trim(s) { return String(s).replace(/^\s+|\s+$/g, ""); }
+
+function parseToken(raw) {
+  if (!raw) return null;
+  var t = trim(raw);
+  if (!t) return null;
+  if (t.charAt(0) === "{") {
+    try {
+      var o = parseJson(t);
+      var keys = ["value", "token", "access_token", "accessToken", "userToken"];
+      for (var i = 0; i < keys.length; i++) {
+        var v = o[keys[i]];
+        if (typeof v === "string" && v.length >= 20 && !/\s/.test(v)) return v;
+      }
+      return null;
+    } catch (e) { return null; }
+  }
+  return t.length >= 20 && !/\s/.test(t) ? t : null;
+}
+
+function parseJson(text) {
+  try { return JSON.parse(text); } catch (e) {}
+  return eval("(" + text + ")");
+}
+
+function num(v) {
+  if (typeof v === "number") return isFinite(v) ? v : null;
+  if (typeof v !== "string") return null;
+  var c = trim(v).replace(/,/g, "");
+  if (!c) return null;
+  var n = Number(c);
+  return isFinite(n) ? n : null;
+}
+
+/* DeepSeek-Peak: Mo-Fr 01:00-04:00 und 06:00-10:00 UTC. */
+function isPeak(d) {
+  var day = d.getUTCDay();
+  if (day === 0 || day === 6) return false;
+  var h = d.getUTCHours();
+  return (h >= 1 && h < 4) || (h >= 6 && h < 10);
+}
+
+function money(v) {
+  if (v === null || v === undefined || v < 0) return "--";
+  return "$" + v.toFixed(2);
+}
+
+function pad2(n) { return n < 10 ? "0" + n : "" + n; }
+
+function dayIso(d) {
+  return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+}
+
+function httpGet(url, token) {
+  var x = null;
+  try { x = new ActiveXObject("MSXML2.XMLHTTP"); } catch (e) {}
+  if (!x) { try { x = new ActiveXObject("Microsoft.XMLHTTP"); } catch (e) { return null; } }
+  try {
+    x.open("GET", url, false);
+    x.setRequestHeader("Accept", "application/json");
+    x.setRequestHeader("Authorization", "Bearer " + token);
+    x.send();
+    return { status: x.status, body: x.responseText };
+  } catch (e) {
+    return { status: 0, body: "" };
+  }
+}
+
+function walletsFrom(json) {
+  var biz = json && json.data && json.data.biz_data;
+  if (!biz) return null;
+  var normal = biz.normal_wallets || [];
+  var bonus = biz.bonus_wallets || [];
+  var currency = "USD";
+  var i, sumNormal = 0, sumBonus = 0, found = false;
+  for (i = 0; i < normal.length; i++) {
+    if (String(normal[i].currency).toUpperCase() === currency) { sumNormal += num(normal[i].balance) || 0; found = true; }
+  }
+  for (i = 0; i < bonus.length; i++) {
+    if (String(bonus[i].currency).toUpperCase() === currency) { sumBonus += num(bonus[i].balance) || 0; found = true; }
+  }
+  if (!found && normal.length) {
+    currency = String(normal[0].currency).toUpperCase();
+    sumNormal = num(normal[0].balance) || 0;
+    found = true;
+  }
+  if (!found) return null;
+  return { currency: currency, toppedUp: sumNormal, granted: sumBonus, total: sumNormal + sumBonus };
+}
+
+function dayCost(json, day) {
+  var raw = json && json.data && json.data.biz_data;
+  if (!raw) return null;
+  var rows = raw.length ? raw : [raw];
+  var row = rows[0], i;
+  for (i = 0; i < rows.length; i++) {
+    if (String(rows[i].currency).toUpperCase() === "USD") { row = rows[i]; break; }
+  }
+  var days = row.days || [];
+  var monthPrefix = String(day).substring(0, 7);
+  var month = 0, monthSeen = false, todayValue = null;
+
+  for (i = 0; i < days.length; i++) {
+    var date = String(days[i].date || "");
+    if (date.substring(0, 7) !== monthPrefix) continue;
+    var parts = days[i].data || [];
+    var j, k, total = 0, seen = false;
+    for (j = 0; j < parts.length; j++) {
+      var usage = parts[j].usage || [];
+      for (k = 0; k < usage.length; k++) {
+        if (String(usage[k].type).toUpperCase() === "REQUEST") continue;
+        var v = num(usage[k].amount);
+        if (v !== null) { total += v; seen = true; }
+      }
+    }
+    if (seen) { month += total; monthSeen = true; }
+    if (date === day && seen) todayValue = total;
+  }
+  return { today: todayValue, month: monthSeen ? month : null };
+}
+
+function paint(kind, balance, cost) {
+  var colors = { ok: "#3ddc84", none: "#e8c341", auth: "#ff6b6b", error: "#ff6b6b" };
+  el("led").style.color = colors[kind] || "#8a8a8a";
+  el("bal").innerHTML = balance;
+  el("cost").innerHTML = cost;
+  el("peak").style.display = isPeak(new Date()) ? "block" : "none";
+}
+
+function refresh() {
+  if (busy) return;
+  busy = true;
+  try {
+    var token = readToken();
+    if (!token) {
+      paint("none", "Token fehlt", "");
+      return;
+    }
+    var now = new Date();
+    var s = httpGet("https://platform.deepseek.com/api/v0/users/get_user_summary", token);
+    var c = httpGet("https://platform.deepseek.com/api/v0/usage/cost?month=" + (now.getMonth() + 1) + "&year=" + now.getFullYear(), token);
+    if (!s || s.status !== 200) { paint("error", "Fehler " + (s ? s.status : "?"), ""); return; }
+    var sj = null, cj = null;
+    try { sj = parseJson(s.body); } catch (e) {}
+    var w = walletsFrom(sj);
+    if (!w) {
+      var code = sj && sj.code;
+      paint((code === 40002 || code === 40003) ? "auth" : "error", "Token ung&uuml;ltig", "");
+      return;
+    }
+    if (c && c.status === 200) { try { cj = parseJson(c.body); } catch (e) {} }
+    var d = dayCost(cj, dayIso(now));
+    paint("ok", money(w.total), "&middot; heute " + money(d ? d.today : null));
+  } catch (e) {
+    paint("error", "Fehler", "");
+  } finally {
+    busy = false;
+  }
+}
+
+function openUsage() {
+  try { System.Shell.execute("https://platform.deepseek.com/usage"); return; } catch (e) {}
+  try { window.open("https://platform.deepseek.com/usage", "_blank"); } catch (e) {}
+}
+
+window.onload = function () {
+  refresh();
+  setInterval(refresh, REFRESH_MS);
+};
+</script>
+</head>
+<body onclick="openUsage()"><g:background id="bg" src="src/background.png"></g:background><span id="led">&#9679;</span><img id="card" src="src/card.png" alt="" /><span id="bal">l&auml;dt ...</span><span id="cost"></span><img id="peak" src="src/peak.png" alt="" /></body>
+</html>
+
+
+
+
+
+
