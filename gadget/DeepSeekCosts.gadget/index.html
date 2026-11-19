@@ -1,57 +1,34 @@
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>DeepSeek Costs</title>
 <style type="text/css">
-body {
-  font-family: Tahoma, Arial, sans-serif;
+html, body {
   margin: 0px;
   padding: 0px;
   width: 130px;
-  height: 38px;
+  height: 22px;
   overflow: hidden;
+  background-color: transparent;
   cursor: pointer;
 }
-#led {
+#c {
   position: absolute;
-  top: 0px;
-  left: 8px;
-  color: #3ddc84;
-  font-size: 10pt;
-  line-height: 38px;
-}
-#bal {
-  position: absolute;
-  top: 0px;
-  left: 19px;
-  color: #ffffff;
-  font-size: 10pt;
-  font-weight: bold;
-  line-height: 38px;
-  white-space: nowrap;
-}
-#cost {
-  position: absolute;
-  top: 0px;
-  left: 66px;
-  color: #ffffff;
-  font-size: 6.5pt;
-  line-height: 38px;
-  white-space: nowrap;
-}
-#peak {
-  position: absolute;
-  top: 12px;
-  right: 2px;
-  -ms-interpolation-mode: nearest-neighbor;
-  display: none;
+  left: -5px;
+  top: -5px;
+  width: 150px;
+  height: 34px;
 }
 </style>
 <script type="text/javascript">
-/* ES3 — die Gadget-Engine ist alt. Kein let/const, keine Pfeilfunktionen. */
+/* ES3 — Gadget-Engine ist alt: kein let/const, keine Pfeilfunktionen. */
 
 var TOKEN_REL = "\\.config\\opencode\\secrets\\deepseek-platform-token";
 var REFRESH_MS = 5 * 60 * 1000;
 var busy = false;
+var peakImg = new Image();
+peakImg.src = "src/peak2x.png";
 
 function el(id) { return document.getElementById(id); }
 
@@ -65,25 +42,12 @@ function homeDir() {
   return "";
 }
 
-function readToken() {
-  var f = fso();
-  if (!f) return null;
-  var path = homeDir() + TOKEN_REL;
-  try {
-    if (!f.FileExists(path)) return null;
-    var s = f.OpenTextFile(path, 1, false);
-    var text = s.ReadAll();
-    s.Close();
-    var lines = text.split(/\r?\n/);
-    for (var i = 0; i < lines.length; i++) {
-      var line = trim(lines[i]);
-      if (line && line.charAt(0) !== "#") return parseToken(line);
-    }
-  } catch (e) {}
-  return null;
-}
-
 function trim(s) { return String(s).replace(/^\s+|\s+$/g, ""); }
+
+function parseJson(text) {
+  try { return JSON.parse(text); } catch (e) {}
+  return eval("(" + text + ")");
+}
 
 function parseToken(raw) {
   if (!raw) return null;
@@ -103,9 +67,22 @@ function parseToken(raw) {
   return t.length >= 20 && !/\s/.test(t) ? t : null;
 }
 
-function parseJson(text) {
-  try { return JSON.parse(text); } catch (e) {}
-  return eval("(" + text + ")");
+function readToken() {
+  var f = fso();
+  if (!f) return null;
+  try {
+    var path = homeDir() + TOKEN_REL;
+    if (!f.FileExists(path)) return null;
+    var s = f.OpenTextFile(path, 1, false);
+    var text = s.ReadAll();
+    s.Close();
+    var lines = text.split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++) {
+      var line = trim(lines[i]);
+      if (line && line.charAt(0) !== "#") return parseToken(line);
+    }
+  } catch (e) {}
+  return null;
 }
 
 function num(v) {
@@ -117,7 +94,6 @@ function num(v) {
   return isFinite(n) ? n : null;
 }
 
-/* DeepSeek-Peak: Mo-Fr 01:00-04:00 und 06:00-10:00 UTC. */
 function isPeak(d) {
   var day = d.getUTCDay();
   if (day === 0 || day === 6) return false;
@@ -156,21 +132,19 @@ function walletsFrom(json) {
   if (!biz) return null;
   var normal = biz.normal_wallets || [];
   var bonus = biz.bonus_wallets || [];
-  var currency = "USD";
   var i, sumNormal = 0, sumBonus = 0, found = false;
   for (i = 0; i < normal.length; i++) {
-    if (String(normal[i].currency).toUpperCase() === currency) { sumNormal += num(normal[i].balance) || 0; found = true; }
+    if (String(normal[i].currency).toUpperCase() === "USD") { sumNormal += num(normal[i].balance) || 0; found = true; }
   }
   for (i = 0; i < bonus.length; i++) {
-    if (String(bonus[i].currency).toUpperCase() === currency) { sumBonus += num(bonus[i].balance) || 0; found = true; }
+    if (String(bonus[i].currency).toUpperCase() === "USD") { sumBonus += num(bonus[i].balance) || 0; found = true; }
   }
   if (!found && normal.length) {
-    currency = String(normal[0].currency).toUpperCase();
     sumNormal = num(normal[0].balance) || 0;
     found = true;
   }
   if (!found) return null;
-  return { currency: currency, toppedUp: sumNormal, granted: sumBonus, total: sumNormal + sumBonus };
+  return { toppedUp: sumNormal, granted: sumBonus, total: sumNormal + sumBonus };
 }
 
 function dayCost(json, day) {
@@ -184,7 +158,6 @@ function dayCost(json, day) {
   var days = row.days || [];
   var monthPrefix = String(day).substring(0, 7);
   var month = 0, monthSeen = false, todayValue = null;
-
   for (i = 0; i < days.length; i++) {
     var date = String(days[i].date || "");
     if (date.substring(0, 7) !== monthPrefix) continue;
@@ -204,12 +177,39 @@ function dayCost(json, day) {
   return { today: todayValue, month: monthSeen ? month : null };
 }
 
-function paint(kind, balance, cost) {
+var bgImg = new Image();
+var bgReady = false;
+bgImg.onload = function () { bgReady = true; refresh(); };
+bgImg.src = "src/bg22.png";
+
+function draw(kind, balance, cost) {
+  var cv = el("c");
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext("2d");
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, 300, 68);
+  ctx.setTransform(2, 0, 0, 2, 0, 0);
+  if (bgReady) ctx.drawImage(bgImg, 0, 0, 150, 34);
+
   var colors = { ok: "#3ddc84", none: "#e8c341", auth: "#ff6b6b", error: "#ff6b6b" };
-  el("led").style.color = colors[kind] || "#8a8a8a";
-  el("bal").innerHTML = balance;
-  el("cost").innerHTML = cost;
-  el("peak").style.display = isPeak(new Date()) ? "block" : "none";
+  ctx.beginPath();
+  ctx.arc(13, 17, 4, 0, Math.PI * 2);
+  ctx.fillStyle = colors[kind] || "#8a8a8a";
+  ctx.fill();
+
+  ctx.textBaseline = "middle";
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 13px Tahoma";
+  ctx.fillText(balance, 22, 17);
+  var w = ctx.measureText(balance).width;
+  ctx.font = "9px Tahoma";
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(cost, 22 + w + 6, 17);
+
+  if (isPeak(new Date()) && peakImg.complete && peakImg.width > 0) {
+    ctx.drawImage(peakImg, 136, 7, 9, 13);
+  }
 }
 
 function refresh() {
@@ -217,35 +217,36 @@ function refresh() {
   busy = true;
   try {
     var token = readToken();
-    if (!token) {
-      paint("none", "Token fehlt", "");
-      return;
-    }
+    if (!token) { draw("none", "Token fehlt", ""); return; }
     var now = new Date();
     var s = httpGet("https://platform.deepseek.com/api/v0/users/get_user_summary", token);
     var c = httpGet("https://platform.deepseek.com/api/v0/usage/cost?month=" + (now.getMonth() + 1) + "&year=" + now.getFullYear(), token);
-    if (!s || s.status !== 200) { paint("error", "Fehler " + (s ? s.status : "?"), ""); return; }
+    if (!s || s.status !== 200) { draw("error", "Fehler " + (s ? s.status : "?"), ""); return; }
     var sj = null, cj = null;
     try { sj = parseJson(s.body); } catch (e) {}
     var w = walletsFrom(sj);
     if (!w) {
       var code = sj && sj.code;
-      paint((code === 40002 || code === 40003) ? "auth" : "error", "Token ung&uuml;ltig", "");
+      draw((code === 40002 || code === 40003) ? "auth" : "error", "Token ung\u00fcltig", "");
       return;
     }
     if (c && c.status === 200) { try { cj = parseJson(c.body); } catch (e) {} }
     var d = dayCost(cj, dayIso(now));
-    paint("ok", money(w.total), "&middot; heute " + money(d ? d.today : null));
+    draw("ok", money(w.total), "\u00b7 heute " + money(d ? d.today : null));
   } catch (e) {
-    paint("error", "Fehler", "");
+    draw("error", "Fehler", "");
   } finally {
     busy = false;
   }
 }
 
 function openUsage() {
-  try { System.Shell.execute("https://platform.deepseek.com/usage"); return; } catch (e) {}
-  try { window.open("https://platform.deepseek.com/usage", "_blank"); } catch (e) {}
+  try {
+    var sh = new ActiveXObject("WScript.Shell");
+    sh.Run("cmd /c start \"\" \"https://platform.deepseek.com/usage\"", 0, false);
+    return;
+  } catch (e) {}
+  try { System.Shell.execute("https://platform.deepseek.com/usage"); } catch (e) {}
 }
 
 window.onload = function () {
@@ -254,17 +255,8 @@ window.onload = function () {
 };
 </script>
 </head>
-<body onclick="openUsage()"><g:background id="bg" src="src/background2x.png" style="position:absolute;top:0;left:0;width:130;height:38;z-index:-2" /><span id="led">&#9679;</span><span id="bal">l&auml;dt ...</span><span id="cost"></span><img id="peak" src="src/peak2x.png" width="11" height="16" alt="" /></body>
+<body onclick="openUsage()"><g:background id="bg" opacity="0%" /><canvas id="c" width="300" height="68"></canvas></body>
 </html>
-
-
-
-
-
-
-
-
-
 
 
 
