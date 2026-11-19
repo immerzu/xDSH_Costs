@@ -261,8 +261,9 @@ function refresh() {
     var token = readToken();
     if (!token) { show("none", "Token fehlt", ""); return; }
     var now = new Date();
-    var s = httpGet("https://platform.deepseek.com/api/v0/users/get_user_summary", token);
-    var c = httpGet("https://platform.deepseek.com/api/v0/usage/cost?month=" + (now.getMonth() + 1) + "&year=" + now.getFullYear(), token);
+    var nk = "?_t=" + (new Date()).getTime();
+    var s = httpGet("https://platform.deepseek.com/api/v0/users/get_user_summary" + nk, token);
+    var c = httpGet("https://platform.deepseek.com/api/v0/usage/cost?month=" + (now.getMonth() + 1) + "&year=" + now.getFullYear() + "&_t=" + nk.substring(1), token);
     if (!s || s.status !== 200) { show("error", "Fehler " + (s ? s.status : "?"), ""); return; }
     var sj = null, cj = null;
     try { sj = parseJson(s.body); } catch (e) {}
@@ -311,6 +312,7 @@ function init() {
 </head>
 <body onload="init()" onclick="clickRefresh()"><g:background id="bg" src="src/background.png"></g:background></body>
 </html>
+
 
 
 
