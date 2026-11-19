@@ -3,55 +3,47 @@
 <title>DeepSeek Costs</title>
 <style type="text/css">
 body {
-  margin: 0;
-  margin-bottom: 0;
+  font-family: Tahoma, Arial, sans-serif;
+  margin: 0px;
+  padding: 0px;
   width: 130px;
   height: 38px;
   overflow: hidden;
-  font-family: "Segoe UI", Tahoma, sans-serif;
   cursor: pointer;
 }
 #led {
   position: absolute;
-  left: 6px;
-  top: 12px;
+  top: 0px;
+  left: 8px;
   color: #3ddc84;
-  font-size: 9px;
-  line-height: 14px;
-}
-#card {
-  position: absolute;
-  left: 17px;
-  top: 13px;
-  width: 14px;
-  height: 9px;
+  font-size: 10pt;
+  line-height: 38px;
 }
 #bal {
   position: absolute;
-  left: 34px;
-  top: 9px;
+  top: 0px;
+  left: 19px;
   color: #ffffff;
-  font-size: 11px;
+  font-size: 10pt;
   font-weight: bold;
-  line-height: 17px;
+  line-height: 38px;
   white-space: nowrap;
 }
 #cost {
   position: absolute;
-  left: 76px;
-  top: 13px;
-  color: #b0b0b0;
-  font-size: 7px;
-  line-height: 12px;
+  top: 0px;
+  left: 66px;
+  color: #ffffff;
+  font-size: 6.5pt;
+  line-height: 38px;
   white-space: nowrap;
 }
 #peak {
   position: absolute;
-  right: 1px;
-  top: 9px;
-  width: 11px;
-  height: 14px;
-  display: block;
+  top: 12px;
+  right: 2px;
+  -ms-interpolation-mode: nearest-neighbor;
+  display: none;
 }
 </style>
 <script type="text/javascript">
@@ -262,8 +254,19 @@ window.onload = function () {
 };
 </script>
 </head>
-<body onclick="openUsage()"><g:background id="bg" src="src/background.png"></g:background><span id="led">&#9679;</span><img id="card" src="src/card.png" alt="" /><span id="bal">l&auml;dt ...</span><span id="cost"></span><img id="peak" src="src/peak.png" alt="" /></body>
+<body onclick="openUsage()"><g:background id="bg" src="src/background2x.png" style="position:absolute;top:0;left:0;width:130;height:38;z-index:-2" /><span id="led">&#9679;</span><span id="bal">l&auml;dt ...</span><span id="cost"></span><img id="peak" src="src/peak2x.png" width="11" height="16" alt="" /></body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
