@@ -1,6 +1,5 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>DeepSeek Costs</title>
 <style type="text/css">
@@ -11,26 +10,26 @@ html, body {
   height: 57px;
   overflow: hidden;
   background-color: transparent;
-  cursor: pointer;
-}
-#c {
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  width: 130px;
-  height: 57px;
 }
 </style>
 <script type="text/javascript">
-/* ES3 — Gadget-Engine ist alt: kein let/const, keine Pfeilfunktionen. */
+/* Native Sidebar-Grafik: g:background.addTextObject / addImageObject.
+   Kein Canvas, kein HTML-Text -> keine ClearType-Farbsaeume. */
 
 var TOKEN_REL = "\\.config\\opencode\\secrets\\deepseek-platform-token";
 var REFRESH_MS = 5 * 60 * 1000;
 var busy = false;
-var peakImg = new Image();
-peakImg.src = "src/peak2x.png";
 
-function el(id) { return document.getElementById(id); }
+var bg = null, txtBal = null, txtCost = null, txtLed = null, imgPeak = null;
+
+function log(msg) {
+  try {
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
+    var f = fso.OpenTextFile(fso.GetSpecialFolder(2) + "\\deepseekcosts.log", 8, true);
+    f.WriteLine(new Date().toTimeString().substring(0, 8) + " " + msg);
+    f.Close();
+  } catch (e) {}
+}
 
 function fso() {
   try { return new ActiveXObject("Scripting.FileSystemObject"); } catch (e) { return null; }
@@ -139,10 +138,7 @@ function walletsFrom(json) {
   for (i = 0; i < bonus.length; i++) {
     if (String(bonus[i].currency).toUpperCase() === "USD") { sumBonus += num(bonus[i].balance) || 0; found = true; }
   }
-  if (!found && normal.length) {
-    sumNormal = num(normal[0].balance) || 0;
-    found = true;
-  }
+  if (!found && normal.length) { sumNormal = num(normal[0].balance) || 0; found = true; }
   if (!found) return null;
   return { toppedUp: sumNormal, granted: sumBonus, total: sumNormal + sumBonus };
 }
@@ -177,38 +173,35 @@ function dayCost(json, day) {
   return { today: todayValue, month: monthSeen ? month : null };
 }
 
-var bgImg = new Image();
-var bgReady = false;
-bgImg.onload = function () { bgReady = true; refresh(); };
-bgImg.src = "src/background.png";
+function colorFor(kind) {
+  if (kind === "ok") return "LimeGreen";
+  if (kind === "none") return "Gold";
+  return "Red";
+}
 
-function draw(kind, balance, cost) {
-  var cv = el("c");
-  if (!cv || !cv.getContext) return;
-  var ctx = cv.getContext("2d");
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.clearRect(0, 0, 260, 114);
-  ctx.setTransform(2, 0, 0, 2, 0, 0);
-  if (bgReady) ctx.drawImage(bgImg, 0, 0, 130, 57);
-
-  var colors = { ok: "#3ddc84", none: "#e8c341", auth: "#ff6b6b", error: "#ff6b6b" };
-  ctx.beginPath();
-  ctx.arc(11, 26, 4, 0, Math.PI * 2);
-  ctx.fillStyle = colors[kind] || "#8a8a8a";
-  ctx.fill();
-
-  ctx.textBaseline = "middle";
-  ctx.textAlign = "left";
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 13px Tahoma";
-  ctx.fillText(balance, 20, 26);
-  var w = ctx.measureText(balance).width;
-  ctx.font = "9px Tahoma";
-  ctx.fillStyle = "#ffffff";
-  ctx.fillText(cost, 20 + w + 6, 26);
-
-  if (isPeak(new Date()) && peakImg.complete && peakImg.width > 0) {
-    ctx.drawImage(peakImg, 118, 20, 9, 13);
+function show(kind, balance, cost) {
+  try {
+    if (!bg) bg = document.getElementById("bg");
+    if (!bg) return;
+    if (!txtBal) txtBal = bg.addTextObject("", "Tahoma", 13, "White", 18, 19);
+    if (!txtCost) txtCost = bg.addTextObject("", "Tahoma", 9, "White", 62, 21);
+    if (!txtLed) txtLed = bg.addTextObject("\u25CF", "Tahoma", 10, "LimeGreen", 7, 21);
+    if (!imgPeak) {
+      try { imgPeak = bg.addImageObject("src/peak2x.png", 116, 19); log("peak obj ok"); } catch (e) { log("peak ERR " + e.message); imgPeak = null; }
+    }
+    try { txtBal.value = balance; } catch (e) { log("bal ERR " + e.message); }
+    try { txtCost.value = cost; } catch (e) { log("cost ERR " + e.message); }
+    try { txtLed.color = colorFor(kind); } catch (e) { log("ledcolor ERR " + e.message); }
+    if (imgPeak) {
+      try { imgPeak.opacity = (isPeak(new Date()) && kind === "ok") ? 100 : 0; } catch (e) { log("opacity ERR " + e.message); }
+    }    txtBal.value = balance;
+    txtCost.value = cost;
+    txtLed.color = colorFor(kind);
+    if (imgPeak) {
+      try { imgPeak.opacity = (isPeak(new Date()) && kind === "ok") ? 1 : 0; } catch (e) {}
+    }
+  } catch (e) {
+    log("show: " + e.message);
   }
 }
 
@@ -217,24 +210,25 @@ function refresh() {
   busy = true;
   try {
     var token = readToken();
-    if (!token) { draw("none", "Token fehlt", ""); return; }
+    if (!token) { show("none", "Token fehlt", ""); return; }
     var now = new Date();
     var s = httpGet("https://platform.deepseek.com/api/v0/users/get_user_summary", token);
     var c = httpGet("https://platform.deepseek.com/api/v0/usage/cost?month=" + (now.getMonth() + 1) + "&year=" + now.getFullYear(), token);
-    if (!s || s.status !== 200) { draw("error", "Fehler " + (s ? s.status : "?"), ""); return; }
+    if (!s || s.status !== 200) { show("error", "Fehler " + (s ? s.status : "?"), ""); return; }
     var sj = null, cj = null;
     try { sj = parseJson(s.body); } catch (e) {}
     var w = walletsFrom(sj);
     if (!w) {
       var code = sj && sj.code;
-      draw((code === 40002 || code === 40003) ? "auth" : "error", "Token ung\u00fcltig", "");
+      show((code === 40002 || code === 40003) ? "auth" : "error", "Token ung\u00fcltig", "");
       return;
     }
     if (c && c.status === 200) { try { cj = parseJson(c.body); } catch (e) {} }
     var d = dayCost(cj, dayIso(now));
-    draw("ok", money(w.total), "\u00b7 heute " + money(d ? d.today : null));
+    show("ok", money(w.total), "\u00b7 heute " + money(d ? d.today : null));
   } catch (e) {
-    draw("error", "Fehler", "");
+    log("refresh: " + e.message);
+    show("error", "Fehler", "");
   } finally {
     busy = false;
   }
@@ -249,19 +243,19 @@ function openUsage() {
   try { System.Shell.execute("https://platform.deepseek.com/usage"); } catch (e) {}
 }
 
-window.onload = function () {
+function init() {
+  bg = document.getElementById("bg");
+  log("init: bg=" + (bg ? "ja" : "nein") + " addImageObject=" + (bg && typeof bg.addImageObject) + " removeObject=" + (bg && typeof bg.removeObject));
+  txtBal = bg.addTextObject("", "Tahoma", 13, "White", 18, 19);
+  txtCost = bg.addTextObject("", "Tahoma", 9, "White", 62, 21);
+  show("ok", "...", "");
   refresh();
   setInterval(refresh, REFRESH_MS);
-};
+}
 </script>
 </head>
-<body onclick="openUsage()"><g:background id="bg" opacity="0%" /><canvas id="c" width="260" height="114"></canvas></body>
+<body onload="init()" onclick="openUsage()"><g:background id="bg" src="src/background.png"></g:background></body>
 </html>
-
-
-
-
-
 
 
 
