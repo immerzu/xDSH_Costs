@@ -8,17 +8,17 @@ html, body {
   margin: 0px;
   padding: 0px;
   width: 130px;
-  height: 22px;
+  height: 57px;
   overflow: hidden;
   background-color: transparent;
   cursor: pointer;
 }
 #c {
   position: absolute;
-  left: -5px;
-  top: -5px;
-  width: 150px;
-  height: 34px;
+  left: 0px;
+  top: 0px;
+  width: 130px;
+  height: 57px;
 }
 </style>
 <script type="text/javascript">
@@ -180,20 +180,20 @@ function dayCost(json, day) {
 var bgImg = new Image();
 var bgReady = false;
 bgImg.onload = function () { bgReady = true; refresh(); };
-bgImg.src = "src/bg22.png";
+bgImg.src = "src/background.png";
 
 function draw(kind, balance, cost) {
   var cv = el("c");
   if (!cv || !cv.getContext) return;
   var ctx = cv.getContext("2d");
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.clearRect(0, 0, 300, 68);
+  ctx.clearRect(0, 0, 260, 114);
   ctx.setTransform(2, 0, 0, 2, 0, 0);
-  if (bgReady) ctx.drawImage(bgImg, 0, 0, 150, 34);
+  if (bgReady) ctx.drawImage(bgImg, 0, 0, 130, 57);
 
   var colors = { ok: "#3ddc84", none: "#e8c341", auth: "#ff6b6b", error: "#ff6b6b" };
   ctx.beginPath();
-  ctx.arc(13, 17, 4, 0, Math.PI * 2);
+  ctx.arc(11, 26, 4, 0, Math.PI * 2);
   ctx.fillStyle = colors[kind] || "#8a8a8a";
   ctx.fill();
 
@@ -201,14 +201,14 @@ function draw(kind, balance, cost) {
   ctx.textAlign = "left";
   ctx.fillStyle = "#ffffff";
   ctx.font = "bold 13px Tahoma";
-  ctx.fillText(balance, 22, 17);
+  ctx.fillText(balance, 20, 26);
   var w = ctx.measureText(balance).width;
   ctx.font = "9px Tahoma";
   ctx.fillStyle = "#ffffff";
-  ctx.fillText(cost, 22 + w + 6, 17);
+  ctx.fillText(cost, 20 + w + 6, 26);
 
   if (isPeak(new Date()) && peakImg.complete && peakImg.width > 0) {
-    ctx.drawImage(peakImg, 136, 7, 9, 13);
+    ctx.drawImage(peakImg, 118, 20, 9, 13);
   }
 }
 
@@ -255,8 +255,11 @@ window.onload = function () {
 };
 </script>
 </head>
-<body onclick="openUsage()"><g:background id="bg" opacity="0%" /><canvas id="c" width="300" height="68"></canvas></body>
+<body onclick="openUsage()"><g:background id="bg" opacity="0%" /><canvas id="c" width="260" height="114"></canvas></body>
 </html>
+
+
+
 
 
 
