@@ -63,6 +63,31 @@ Entwicklung mehrfach für Verwirrung gesorgt.
 |---|---|
 | `gadget.xml` | Gadget-Beschreibung, `permissions full` (nötig für ActiveX/Netz) |
 | `index.html` | Anzeige (ES3-JavaScript, alte MSHTML-Engine) |
+| `sync-token.ps1` | holt den Token aus dem Standardbrowser (Local Storage) |
+
+## Automatischer Token (`sync-token.ps1`, seit 24.11.2026)
+
+Der Token muss **nicht** mehr von Hand kopiert werden. Das Gadget ruft
+`sync-token.ps1` selbst auf, wenn die Token-Datei fehlt oder DeepSeek sie mit
+`40002`/`40003` ablehnt:
+
+1. Das Skript liest die Local-Storage-LevelDB der Browser-Profile
+   (`Chrome for Testing`, Chrome, Edge, Brave) mit `FileShare.ReadWrite` — die
+   Dateien sind während der Browser-Laufzeit sonst gesperrt.
+2. Es sucht die Wertform `{"value":"<token>","__version":"0"}`.
+3. Jeder Kandidat wird gegen `get_user_summary` geprüft; nur ein gültiger Token
+   wird nach `~\.config\opencode\secrets\deepseek-platform-token` geschrieben.
+4. Der Token erscheint nie in einer Ausgabe.
+
+Grenze: Läuft die Web-Session ab, hilft nur eine neue Anmeldung **im Browser** —
+das Gadget kann sich nicht selbst anmelden. Die Anmeldung dort ist aber der
+normale Weg, keine Zusatzprozedur.
+
+Manuell prüfen:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File sync-token.ps1
+```
 | `src/background.png` | Leiste, übernommen vom `ShutdownRestart`-Gadget |
 | `src/card.png` | Karten-Symbol (Emoji wird in der Engine nicht gerendert) |
 | `src/peak.png` | Flamme für die Peak-Zeit |

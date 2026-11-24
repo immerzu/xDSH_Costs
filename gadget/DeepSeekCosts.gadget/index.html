@@ -84,6 +84,19 @@ function readToken() {
   return null;
 }
 
+/* Holt den Token aus dem Standardbrowser (Local Storage), wenn er fehlt oder
+   abgelehnt wurde. Das Skript liegt neben dem Gadget und schreibt dieselbe Datei. */
+function syncToken() {
+  try {
+    var sh = new ActiveXObject("WScript.Shell");
+    var ps = sh.ExpandEnvironmentStrings("%LOCALAPPDATA%") +
+             "\\Microsoft\\Windows Sidebar\\Gadgets\\DeepSeekCosts.gadget\\sync-token.ps1";
+    sh.Run('powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + ps + '"', 0, true);
+    log("sync: aufruf beendet");
+    return true;
+  } catch (e) { log("sync: " + e.message); return false; }
+}
+
 function num(v) {
   if (typeof v === "number") return isFinite(v) ? v : null;
   if (typeof v !== "string") return null;
@@ -254,11 +267,12 @@ function show(kind, balance, cost) {
   }
 }
 
-function refresh() {
+function refresh(syncAllowed) {
   if (busy) return;
   busy = true;
   try {
     var token = readToken();
+    if (!token && syncAllowed !== false) { syncToken(); token = readToken(); }
     if (!token) { show("none", "Token fehlt", ""); return; }
     var now = new Date();
     var nk = "?_t=" + (new Date()).getTime();
@@ -270,6 +284,12 @@ function refresh() {
     var w = walletsFrom(sj);
     if (!w) {
       var code = sj && sj.code;
+      if ((code === 40002 || code === 40003) && syncAllowed !== false) {
+        log("auth abgelehnt, sync + neuer Versuch");
+        busy = false;
+        syncToken();
+        return refresh(false);
+      }
       show((code === 40002 || code === 40003) ? "auth" : "error", "Token ung\u00fcltig", "");
       return;
     }
